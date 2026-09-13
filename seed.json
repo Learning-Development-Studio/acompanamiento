@@ -1,0 +1,134 @@
+{
+  "school": {
+    "name": "Escuela Primaria Niños Héroes",
+    "group": "6° A",
+    "titular": "Maestra Laura Mendoza",
+    "cct": "11DPR1842K",
+    "address": "Col. Las Flores, Celaya, Guanajuato",
+    "turno": "Matutino",
+    "city": "Celaya, Guanajuato",
+    "grade": "6° de primaria",
+    "phase": "Fase 5 · Plan de Estudio SEP 2022",
+    "cycle": "2026–2027"
+  },
+  "subjects": [
+    { "id": "esp", "name": "Español", "campo": "Lenguajes", "short": "ES", "teacher": "Maestra Laura Mendoza", "color": "#001850" },
+    { "id": "ing", "name": "Inglés", "campo": "Lenguajes", "short": "IN", "teacher": "Teacher Ana Ruiz", "color": "#007880" },
+    { "id": "art", "name": "Artes", "campo": "Lenguajes", "short": "AR", "teacher": "Maestro Diego Solís", "color": "#c88808" },
+    { "id": "mat", "name": "Matemáticas", "campo": "Saberes y pensamiento científico", "short": "MAT", "teacher": "Maestra Carmen Vargas", "color": "#0a3a7a" },
+    { "id": "cie", "name": "Ciencias Naturales", "campo": "Saberes y pensamiento científico", "short": "CN", "teacher": "Maestro Roberto Peña", "color": "#006870" },
+    { "id": "his", "name": "Historia", "campo": "Ética, naturaleza y sociedades", "short": "HI", "teacher": "Maestra Elena Soto", "color": "#4a2c6a" },
+    { "id": "geo", "name": "Geografía", "campo": "Ética, naturaleza y sociedades", "short": "GEO", "teacher": "Maestro Luis Herrera", "color": "#1a6b73" },
+    { "id": "fce", "name": "Formación Cívica y Ética", "campo": "Ética, naturaleza y sociedades", "short": "FCE", "teacher": "Maestra Patricia Gómez", "color": "#8a6a12" },
+    { "id": "edf", "name": "Educación Física", "campo": "De lo humano y lo comunitario", "short": "EF", "teacher": "Coach Miguel Andrade", "color": "#007860" },
+    { "id": "soc", "name": "Educación Socioemocional", "campo": "De lo humano y lo comunitario", "short": "SE", "teacher": "Maestra Irene Castro", "color": "#b07810" },
+    { "id": "extra1", "name": "Fútbol", "campo": "Extracurricular", "short": "FU", "teacher": "Coach Ramírez", "color": "#1b7a4a", "extra": true },
+    { "id": "extra2", "name": "Música", "campo": "Extracurricular", "short": "MU", "teacher": "Maestra Yolanda Ríos", "color": "#8a6a12", "extra": true },
+    { "id": "extra3", "name": "Club de lectura", "campo": "Extracurricular", "short": "CL", "teacher": "Maestra Laura Mendoza", "color": "#4a2c6a", "extra": true }
+  ],
+  "schedule": {
+    "1": [
+      { "time": "8:00–8:50", "subjectId": "esp" },
+      { "time": "8:50–9:40", "subjectId": "mat" },
+      { "time": "9:40–10:30", "subjectId": "cie" },
+      { "time": "10:30–11:00", "subjectId": "recreo" },
+      { "time": "11:00–11:50", "subjectId": "his" },
+      { "time": "11:50–12:40", "subjectId": "ing" }
+    ],
+    "2": [
+      { "time": "8:00–8:50", "subjectId": "esp" },
+      { "time": "8:50–9:40", "subjectId": "mat" },
+      { "time": "9:40–10:30", "subjectId": "geo" },
+      { "time": "10:30–11:00", "subjectId": "recreo" },
+      { "time": "11:00–11:50", "subjectId": "art" },
+      { "time": "11:50–12:40", "subjectId": "edf" },
+      { "time": "13:00–14:00", "subjectId": "extra2" }
+    ],
+    "3": [
+      { "time": "8:00–8:50", "subjectId": "esp" },
+      { "time": "8:50–9:40", "subjectId": "mat" },
+      { "time": "9:40–10:30", "subjectId": "cie" },
+      { "time": "10:30–11:00", "subjectId": "recreo" },
+      { "time": "11:00–11:50", "subjectId": "fce" },
+      { "time": "11:50–12:40", "subjectId": "ing" }
+    ],
+    "4": [
+      { "time": "8:00–8:50", "subjectId": "esp" },
+      { "time": "8:50–9:40", "subjectId": "mat" },
+      { "time": "9:40–10:30", "subjectId": "his" },
+      { "time": "10:30–11:00", "subjectId": "recreo" },
+      { "time": "11:00–11:50", "subjectId": "geo" },
+      { "time": "11:50–12:40", "subjectId": "soc" },
+      { "time": "13:00–14:00", "subjectId": "extra3" }
+    ],
+    "5": [
+      { "time": "8:00–8:50", "subjectId": "esp" },
+      { "time": "8:50–9:40", "subjectId": "mat" },
+      { "time": "9:40–10:30", "subjectId": "cie" },
+      { "time": "10:30–11:00", "subjectId": "recreo" },
+      { "time": "11:00–11:50", "subjectId": "esp" },
+      { "time": "11:50–12:40", "subjectId": "ing" },
+      { "time": "13:00–14:00", "subjectId": "extra1" }
+    ]
+  },
+  "assignments": [
+    { "id": 101, "subject": "Formación Cívica y Ética", "title": "Acuerdo de convivencia del salón 6° A", "dueDate": "2026-09-01", "status": "Hecha" },
+    { "id": 102, "subject": "Educación Física", "title": "Traer ropa deportiva y botella de agua", "dueDate": "2026-09-01", "status": "Hecha" },
+    { "id": 103, "subject": "Español", "title": "Leer el cuento y escribir un resumen de media cuartilla", "dueDate": "2026-09-02", "status": "Hecha" },
+    { "id": 104, "subject": "Inglés", "title": "Vocabulary: classroom objects (10 palabras con dibujo)", "dueDate": "2026-09-03", "status": "Hecha" },
+    { "id": 105, "subject": "Matemáticas", "title": "Problemas de fracciones equivalentes, pág. 12–13", "dueDate": "2026-09-03", "status": "Hecha" },
+    { "id": 106, "subject": "Ciencias Naturales", "title": "Dibujo de la célula y sus partes, con nombres", "dueDate": "2026-09-04", "status": "Hecha" },
+    { "id": 107, "subject": "Matemáticas", "title": "Restas con números decimales (hasta centésimos)", "dueDate": "2026-09-08", "status": "Necesito ayuda" },
+    { "id": 108, "subject": "Educación Socioemocional", "title": "Diario de emociones de la semana (5 días)", "dueDate": "2026-09-08", "status": "Por hacer" },
+    { "id": 109, "subject": "Inglés", "title": "Write 5 sentences about my family", "dueDate": "2026-09-09", "status": "Por hacer" },
+    { "id": 110, "subject": "Matemáticas", "title": "Estudiar tablas del 7, 8 y 9 para dictado", "dueDate": "2026-09-09", "status": "En curso" },
+    { "id": 111, "subject": "Club de lectura", "title": "Llevar el libro de la semana y marcar 3 páginas favoritas", "dueDate": "2026-09-09", "status": "Por hacer" },
+    { "id": 112, "subject": "Español", "title": "Proyecto de aula: entrevista a un familiar sobre Celaya", "dueDate": "2026-09-10", "status": "En curso" },
+    { "id": 113, "subject": "Ciencias Naturales", "title": "Experimento en casa: estados del agua (fotos o dibujo)", "dueDate": "2026-09-11", "status": "Por hacer" },
+    { "id": 114, "subject": "Artes", "title": "Dibujo de mi comunidad: plaza, escuela y casa", "dueDate": "2026-09-11", "status": "En curso" },
+    { "id": 115, "subject": "Fútbol", "title": "Práctica de pases y control con ambos pies", "dueDate": "2026-09-11", "status": "Por hacer" },
+    { "id": 116, "subject": "Español", "title": "Ortografía: uso de la tilde en esdrújulas", "dueDate": "2026-09-12", "status": "Por hacer" },
+    { "id": 117, "subject": "Música", "title": "Practicar el Himno Nacional (primera estrofa)", "dueDate": "2026-09-12", "status": "En curso" },
+    { "id": 118, "subject": "Geografía", "title": "Mapa de las 32 entidades de México, con capitales", "dueDate": "2026-09-14", "status": "Por hacer" },
+    { "id": 119, "subject": "Historia", "title": "Línea del tiempo: Independencia de México (1810–1821)", "dueDate": "2026-09-15", "status": "En curso" },
+    { "id": 120, "subject": "Historia", "title": "Lectura: La Nueva España. Responder 8 preguntas", "dueDate": "2026-09-18", "status": "Por hacer" }
+  ],
+  "attendance": [
+    { "id": 1, "schoolDate": "2026-08-31", "state": "Presente", "note": "Primer día de clases del ciclo 2026–2027" },
+    { "id": 2, "schoolDate": "2026-09-01", "state": "Presente", "note": "" },
+    { "id": 3, "schoolDate": "2026-09-02", "state": "Retardo", "note": "Se le olvidó el suéter y regresamos a casa" },
+    { "id": 4, "schoolDate": "2026-09-03", "state": "Presente", "note": "" },
+    { "id": 5, "schoolDate": "2026-09-04", "state": "Presente", "note": "Entregó el dibujo de la célula" }
+  ],
+  "messages": [
+    { "id": 1, "sender": "Israel", "body": "Bienvenidos al ciclo 2026–2027. Esta es la bitácora de Santiago: horario, tareas y recados de la familia. Perla y Santi, aquí nos coordinamos.", "createdAt": "2026-08-30T18:10:00.000Z" },
+    { "id": 2, "sender": "Perla", "body": "Ya tenemos los útiles y los libros. El lunes entra a las 8:00. Gracias, Israel.", "createdAt": "2026-08-30T19:02:00.000Z" },
+    { "id": 3, "sender": "Santiago", "body": "Hola tío. Ya puse mi horario en la mochila. ¿Me ayudas con las restas de decimales?", "createdAt": "2026-09-03T22:15:00.000Z" },
+    { "id": 4, "sender": "Israel", "body": "Claro, Santi. El domingo a las 11:00 repasamos decimales con ejemplos de la tienda. Tú lleva el cuaderno de mates.", "createdAt": "2026-09-03T22:41:00.000Z" },
+    { "id": 5, "sender": "Perla", "body": "El viernes hay fútbol a la 1:00. Yo lo recojo a las 2:10 en la cancha.", "createdAt": "2026-09-04T16:20:00.000Z" },
+    { "id": 6, "sender": "Israel", "body": "Anotado. Santi: agua, tenis y la tarea de la célula ya está hecha. Vas muy bien esta primera semana.", "createdAt": "2026-09-04T16:48:00.000Z" }
+  ],
+  "help": [
+    { "id": 1, "subject": "Matemáticas", "details": "No entiendo cómo acomodar el punto en las restas con decimales. En el 4.5 − 1.25 me trabo.", "status": "Agendada", "createdAt": "2026-09-03T22:16:00.000Z" },
+    { "id": 2, "subject": "Inglés", "details": "No sé cómo armar las 5 sentences about my family. ¿Empiezo con I have...?", "status": "Abierta", "createdAt": "2026-09-04T21:05:00.000Z" }
+  ],
+  "activity": [
+    { "id": 12, "actor": "Israel", "action": "agregó la línea del tiempo de Independencia", "createdAt": "2026-09-04T20:12:00.000Z" },
+    { "id": 11, "actor": "Perla", "action": "marcó asistencia del viernes: presente", "createdAt": "2026-09-04T14:05:00.000Z" },
+    { "id": 10, "actor": "Santiago", "action": "completó el dibujo de la célula", "createdAt": "2026-09-04T13:40:00.000Z" },
+    { "id": 9, "actor": "Santiago", "action": "pidió ayuda en Inglés", "createdAt": "2026-09-04T21:05:00.000Z" },
+    { "id": 8, "actor": "Israel", "action": "agendó el repaso de decimales para el domingo", "createdAt": "2026-09-03T22:41:00.000Z" },
+    { "id": 7, "actor": "Santiago", "action": "pidió ayuda en Matemáticas", "createdAt": "2026-09-03T22:16:00.000Z" },
+    { "id": 6, "actor": "Perla", "action": "registró un retardo el miércoles", "createdAt": "2026-09-02T13:10:00.000Z" },
+    { "id": 5, "actor": "Santiago", "action": "entregó el resumen del cuento", "createdAt": "2026-09-02T12:50:00.000Z" },
+    { "id": 4, "actor": "Israel", "action": "capturó el horario de 6° A y las tres extras", "createdAt": "2026-08-31T07:20:00.000Z" },
+    { "id": 3, "actor": "Perla", "action": "marcó el primer día: presente", "createdAt": "2026-08-31T13:05:00.000Z" },
+    { "id": 2, "actor": "Perla", "action": "confirmó útiles y libros del ciclo", "createdAt": "2026-08-30T19:02:00.000Z" },
+    { "id": 1, "actor": "Israel", "action": "abrió el acompañamiento del ciclo 2026–2027", "createdAt": "2026-08-30T18:10:00.000Z" }
+  ],
+  "evidence": [
+    { "id": 1, "assignmentId": 106, "sharedBy": "Santiago", "note": "Ya está el dibujo en el cuaderno de ciencias. Lo revisamos juntos.", "kind": "link", "label": "Libros de texto CONALITEG · 6°", "url": "https://libros.conaliteg.gob.mx/", "createdAt": "2026-09-04T13:42:00.000Z" },
+    { "id": 2, "assignmentId": 107, "sharedBy": "Israel", "note": "Ejercicios de apoyo para alinear el punto decimal.", "kind": "link", "label": "NEM · Saberes y pensamiento científico", "url": "https://nuevaescuelamexicana.sep.gob.mx/", "createdAt": "2026-09-03T22:50:00.000Z" },
+    { "id": 3, "assignmentId": 119, "sharedBy": "Perla", "note": "Fechas oficiales del 16 de septiembre. No hay clases ese día.", "kind": "link", "label": "Calendario SEP 2026–2027", "url": "https://calendarioescolar.sep.gob.mx/", "createdAt": "2026-09-04T20:15:00.000Z" }
+  ]
+}
