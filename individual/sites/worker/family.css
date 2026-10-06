@@ -1,0 +1,32 @@
+#workspace[data-role="padres"]{min-height:100dvh;background:radial-gradient(ellipse at 5% 5%,#5bb8b00b,transparent 65%),linear-gradient(150deg,#fbfcfc,#fff 50%,#f9fcfb)}
+#workspace[data-role="padres"]>header{padding:20px 24px 0;background:transparent}
+#workspace[data-role="padres"]>header>:not(#profile-bar){display:none}
+#workspace[data-role="padres"] #profile-bar{max-width:1050px;margin:auto;padding:14px 18px;background:#0b1f3a;border-radius:20px;box-shadow:0 12px 30px #0b1f3a15}
+#workspace[data-role="padres"] .student-brand{display:flex;align-items:center;gap:13px;flex:1}
+#workspace[data-role="padres"] #active-profile{font-size:13px;color:#d7ecea}
+#workspace[data-role="padres"] #logout{color:white;background:#ffffff12;border-color:#ffffff40;border-radius:99px;font-size:13px}
+#workspace[data-role="padres"] main{max-width:1098px;padding:22px 24px 32px}
+#workspace[data-role="padres"] main>nav{display:none}
+#reportes{font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:#172033}
+.family-hero{background:radial-gradient(ellipse at 0 0,#5bb8b011,transparent 65%),linear-gradient(125deg,#fbfdfc,#fff);border:1px solid #238d851f;border-radius:26px;padding:36px 38px;box-shadow:0 18px 44px #0b1f3a08}
+.family-hero h2{font-size:clamp(30px,4.5vw,46px);font-weight:800;letter-spacing:-.04em;color:#0b1f3a;max-width:650px;margin:14px 0}
+.family-lead{font-size:18px;color:#526b83}.family-updated{font-size:12px;color:#657990;margin-top:20px}
+.family-highlights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:20px 0}
+.family-highlight{padding:22px;background:white;border:1px solid #0b294b15;border-top:3px solid #0b294b;border-radius:18px;box-shadow:0 4px 16px #0b1f3a05}
+.family-highlight:nth-child(2){border-top-color:#5bb8b0}.family-highlight:nth-child(3){border-top-color:#d4a843}
+.family-kicker{font-size:11px;font-weight:750;letter-spacing:.04em;color:#238d85}.family-highlight p{font-size:16px;line-height:1.6;margin:9px 0 0;color:#24374b}
+.family-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0}.family-tabs button{font-size:13px;font-weight:650;border-radius:99px;padding:10px 14px;border-color:#0b294b1d}
+.family-tabs button[aria-pressed="true"]{background:#0b1f3a;color:white;border-color:#0b1f3a}
+.family-pane{padding:28px;background:white;border:1px solid #0b294b15;border-radius:24px;box-shadow:0 8px 26px #0b1f3a06}
+.family-pane h3{font-size:25px;margin:0 0 18px;color:#0b1f3a;letter-spacing:-.025em}.family-pane h4{font-size:16px;color:#0b294b;margin:25px 0 7px}
+.family-pane p{line-height:1.75;color:#52647a}.family-kind-note{background:#f9faf8;border-left:3px solid #d4a843;padding:14px 18px;border-radius:10px;font-size:14px}
+.family-home-pill{display:inline-block;border-radius:99px;background:#f1f8f6;color:#186d67;font-size:12px;font-weight:650;padding:6px 11px}
+.family-discovery{display:flex;gap:16px;align-items:center;padding:19px 0;border-bottom:1px solid #0b294b10}.family-discovery:last-child{border:0}
+.family-discovery-check{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:14px;background:#eef7f4;color:#238d85;font-size:23px}
+.family-discovery h4{margin:0}.family-discovery p{font-size:13px;margin:4px 0}.family-discovery small{font-size:11px}
+.family-report-card,.family-message{padding:19px 0;border-bottom:1px solid #0b294b12}.family-report-card:last-child,.family-message:last-child{border:0}.family-report-card p{font-size:15px}
+.family-report-card button,.family-message-form button{background:#0b1f3a;color:white;border:0;border-radius:99px;font-size:13px;font-weight:700;padding:11px 18px}
+.family-message-form textarea{border:1px solid #0b294b24;border-radius:14px;min-height:105px;margin:8px 0 14px;padding:14px}.family-message-form label{font-size:14px;font-weight:500;color:#52647a}.family-empty{padding:18px;border:1px dashed #0b294b25;border-radius:15px;background:#fcfdfd}
+.family-editor textarea{margin-bottom:15px}.family-editor .actions button:nth-child(2){background:#0b1f3a;color:white;border-color:#0b1f3a}.family-editor h2{color:#0b1f3a}
+@media(max-width:650px){.family-highlights{grid-template-columns:1fr;gap:10px}.family-highlight{padding:17px 19px}.family-hero{padding:28px 24px}.family-pane{padding:23px}.family-tabs{gap:7px}.family-tabs button{font-size:12px;padding:9px 11px}#workspace[data-role="padres"]>header{padding:12px 12px 0}#workspace[data-role="padres"] #profile-bar{gap:9px;padding:11px 12px}#workspace[data-role="padres"] main{padding:16px 12px}.student-brand strong{font-size:12px}#workspace[data-role="padres"] #active-profile{display:none}}
+@media print{.family-tabs,.family-message-form{display:none!important}.family-pane[hidden]{display:none!important}.family-hero{box-shadow:none}.family-highlights{display:block}}

@@ -1,0 +1,10 @@
+dist/
+page.html
+page-script.js
+.env
+.env.*
+!.env.example
+.sites-runtime/
+.wrangler/
+node_modules/
+*.tar.gz
