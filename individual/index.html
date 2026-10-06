@@ -150,6 +150,42 @@
 @media(max-width:520px){.discover-activity-screen{min-height:calc(100dvh - 110px)}#alumno .discover-activity-screen .task-stage{min-height:calc(100dvh - 115px)}}
 #alumno .discover-hero-copy{max-width:min(660px,calc(100% - 210px))}.discover-hero:after{opacity:.15}
 @media(max-width:800px){#alumno .discover-hero-copy{max-width:100%}.discover-hero:after{opacity:.1}}
+
+/* Pictogramas para actuar sin depender de la lectura de botones. */
+.child-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important}
+#alumno .child-pictogram{position:relative;flex-shrink:0;width:76px;min-width:76px;height:76px;min-height:76px;padding:17px;border-radius:23px;gap:0;border:1px solid #238d8530;background:#e3f5f1;color:#186d67;box-shadow:0 4px 10px #0b1f3a08}
+#alumno .child-pictogram .discover-icon{width:38px;height:38px}
+#alumno .child-pictogram:hover{background:#d3eee7;box-shadow:0 6px 16px #0b1f3a12}
+#alumno .pictogram-check{background:#fff3d6;border-color:#d4a84370;color:#0b294b}
+#alumno .pictogram-check:hover{background:#ffeab6}
+#alumno .pictogram-next,#alumno .pictogram-play{background:#0b1f3a;border-color:#0b1f3a;color:#fff}
+#alumno .pictogram-next:hover,#alumno .pictogram-play:hover{background:#173552}
+#alumno .pictogram-home,#alumno .pictogram-pause{background:#fff;color:#0b294b;border-color:#0b294b24}
+#alumno .pictogram-home:hover,#alumno .pictogram-pause:hover{background:#ecf3f5}
+#alumno .pictogram-download{background:#fff3d6;border-color:#d4a84370;color:#0b294b}
+#alumno .child-pictogram:disabled{opacity:.4;box-shadow:none;transform:none}
+#alumno .child-pictogram:focus-visible{outline:3px solid #238d85;outline-offset:5px}
+.child-icon-badge{position:absolute;right:7px;top:5px;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#fff;color:#186d67;border:1px solid #238d8545;font-size:13px;font-weight:800}
+#alumno .discover-hero-actions .child-pictogram{width:84px;min-width:84px;height:84px;min-height:84px;border-radius:25px;padding:20px}
+#alumno .discover-hero-actions .discover-icon{width:42px;height:42px}
+#alumno .discover-listen.child-pictogram{display:flex;justify-content:center;width:58px;min-width:58px;height:58px;min-height:58px;margin:0 18px 16px;padding:13px;border:1px solid #238d8530;border-radius:18px;background:#e3f5f1}
+#alumno .discover-listen.child-pictogram .discover-icon{width:30px;height:30px}
+#alumno .discover-footer .child-pictogram{width:76px;min-width:76px;height:76px;min-height:76px;border-radius:23px;padding:17px}
+#alumno .task-stage>.actions .child-pictogram{min-height:76px;border-radius:23px}
+#alumno .task-stage>.actions .child-pictogram:first-child{margin-right:auto}
+#alumno .discover-route .discover-route-pictogram{justify-content:center;gap:14px;padding:13px;min-height:64px}
+#alumno .discover-route-pictogram .discover-icon{display:inline-flex;margin-left:0;width:30px;height:30px}
+@media(max-width:520px){
+ #alumno .child-pictogram,#alumno .task-stage>.actions .child-pictogram{width:64px;min-width:64px;height:64px;min-height:64px;padding:14px;border-radius:20px}
+ #alumno .child-pictogram .discover-icon{width:34px;height:34px}
+ #alumno .discover-hero-actions .child-pictogram{width:76px;min-width:76px;height:76px;min-height:76px;padding:17px;border-radius:23px}
+ #alumno .discover-listen.child-pictogram{margin-left:11px;margin-bottom:12px}
+ #alumno .discover-route .discover-route-pictogram{gap:8px;padding:10px 6px}
+ #alumno .discover-route-pictogram .discover-icon{display:inline-flex;width:27px;height:27px}
+ #alumno .discover-footer{flex-direction:row;align-items:center}
+ #alumno .discover-footer .child-pictogram{width:64px;min-width:64px;height:64px;min-height:64px;padding:14px;border-radius:20px}
+}
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -289,8 +325,17 @@ function childVoice(message,done,generation){if(generation!==childSoundGeneratio
 function childRecording(key,message,done,generation){if(generation!==childSoundGeneration)return;const sound=new Audio('assets/audio/'+key+'.mp3');childMedia=sound;let handled=false;const fallback=()=>{if(handled||generation!==childSoundGeneration)return;handled=true;sound.pause();sound.onended=null;sound.onerror=null;childMedia=null;notify('No se pudo cargar la grabación. Se usará la voz del dispositivo.');childVoice(message,done,generation);};sound.onended=()=>{if(handled||generation!==childSoundGeneration)return;handled=true;childMedia=null;if(done)done();};sound.onerror=fallback;sound.play().catch(fallback);}
 function childSpeak(message,done,recordingKey){stopChildSound();const generation=childSoundGeneration;const word=message.trim().toLowerCase().replace(/[.,!?¡¿]+$/g,'');const key=recordingKey||(!done&&childRecordedWords.has(word)?word:null);if(key)childRecording(key,message,done,generation);else childVoice(message,done,generation);}
 function childSequence(parts){stopChildSound();const generation=childSoundGeneration;let index=0;const next=()=>{if(generation!==childSoundGeneration||index>=parts.length)return;const part=parts[index++];if(part.key)childRecording(part.key,part.text||part.key,next,generation);else childVoice(part.text,next,generation);};next();}
-function childButton(label,fn){const b=action(label,fn);b.className='child-button';const icons={'🔊':'speaker','▶':'play','⏸':'pause','✕':'back','⬇':'download','✓':'check','→':'next','＋':'plus','−':'minus'};const key=Object.keys(icons).find(k=>label.startsWith(k));if(key){b.replaceChildren(discoverIcon(icons[key]),elem('span',label.slice(key.length).trim()));}return b;}
-function discoverIcon(name){const paths={speaker:'<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>',play:'<path d="m8 5 11 7-11 7V5Z"/>',pause:'<path d="M8 5v14m8-14v14"/>',back:'<path d="m12 5-7 7 7 7M5 12h15"/>',next:'<path d="m12 5 7 7-7 7M19 12H4"/>',download:'<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>',check:'<path d="m5 12 4 4L19 6"/>',plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>'};const el=elem('span',undefined,'discover-icon');el.setAttribute('aria-hidden','true');el.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+(paths[name]||paths.next)+'</svg>';return el;}
+function childButton(label,fn){
+ const b=action('',fn);b.className='child-button';if(!label)return b;
+ const icons={'🔊':'speaker','▶':'play','⏸':'pause','✕':'home','⬇':'download','✓':'check','→':'next','＋':'plus','−':'minus'};
+ const key=Object.keys(icons).find(k=>label.startsWith(k));const name=key?label.slice(key.length).trim():label;
+ const icon=name==='Volver a descubrir'?'home':name==='Escuchar el cuento'?'speaker':name==='Ver cómo se hace'?'demo':(icons[key]||'next');
+ b.classList.add('child-pictogram','pictogram-'+icon);b.setAttribute('aria-label',name);b.title=name;
+ b.append(discoverIcon(icon),elem('span',name,'child-sr-only'));
+ if(name==='Escuchar instrucciones'){const badge=elem('span','?','child-icon-badge');badge.setAttribute('aria-hidden','true');b.append(badge);}
+ return b;
+}
+function discoverIcon(name){const paths={speaker:'<path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>',play:'<path d="m8 5 11 7-11 7V5Z"/>',pause:'<path d="M8 5v14m8-14v14"/>',back:'<path d="m12 5-7 7 7 7M5 12h15"/>',next:'<path d="m12 5 7 7-7 7M19 12H4"/>',download:'<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>',check:'<path d="m5 12 4 4L19 6"/>',plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>',home:'<path d="m3 11 9-8 9 8M5 9v12h14V9M10 21v-7h4v7"/>',demo:'<rect x="3" y="4" width="18" height="16" rx="4"/><path d="m10 8 6 4-6 4V8Z"/>',book:'<path d="M12 5v16M12 5C8 2 4 3 2 4v15c3-1 6-1 10 2m0-16c4-3 8-2 10-1v15c-3-1-6-1-10 2"/>',pencil:'<path d="m15 4 5 5M4 20l5-1L21 7a2 2 0 0 0-4-4L5 15l-1 5Z"/>'};const el=elem('span',undefined,'discover-icon');el.setAttribute('aria-hidden','true');el.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+(paths[name]||paths.next)+'</svg>';return el;}
 const visualTasks=[
   {
     "id": "escucha-imagen",
@@ -433,7 +478,7 @@ const visualTasks=[
     "picture": "pan",
     "session": 2,
     "type": "readword",
-    "instruction": "Intenta leer la palabra. Toca Ya intenté.",
+    "instruction": "Intenta leer la palabra. Después, toca la palomita.",
     "items": [
       {
         "word": "sol"
@@ -522,7 +567,7 @@ const visualTasks=[
     "picture": "perro",
     "session": 3,
     "type": "paired",
-    "instruction": "Intenta leer esta parte. Toca Ya intenté.",
+    "instruction": "Intenta leer esta parte. Después, toca la palomita.",
     "sentences": [
       "Luis salió al patio con una pelota.",
       "Su perro vino junto a él.",
@@ -578,13 +623,13 @@ function buildStudent(){
  [[3,'encuentros'],[visualTasks.length,'actividades'],[exercises,'ejercicios para explorar']].forEach(([number,label])=>{const item=elem('div');item.append(elem('strong',String(number)),elem('span',label));overview.append(item);});catalog.append(overview);
  const route=elem('div',undefined,'discover-route');route.setAttribute('role','navigation');route.setAttribute('aria-label','Elegir encuentro');
  const subtitles=['Sonidos y juegos','Palabras e historias','Lectura y mensajes'];const shortNames=['Sonidos','Historias','Mensajes'];
- for(let session=1;session<=3;session++){const jump=childButton('',()=>document.getElementById('discover-session-'+session).scrollIntoView({behavior:'smooth',block:'start'}));jump.append(elem('b',String(session)),elem('span',shortNames[session-1]),discoverIcon('next'));route.append(jump);}catalog.append(route);
+ for(let session=1;session<=3;session++){const jump=childButton('',()=>document.getElementById('discover-session-'+session).scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'}));const name='Encuentro '+session+': '+subtitles[session-1];jump.classList.add('discover-route-pictogram');jump.setAttribute('aria-label',name);jump.title=name;jump.append(elem('b',String(session)),discoverIcon(['speaker','book','pencil'][session-1]),elem('span',shortNames[session-1],'child-sr-only'));route.append(jump);}catalog.append(route);
  for(let session=1;session<=3;session++){
  const group=elem('section',undefined,'discover-group tone-'+session);group.id='discover-session-'+session;
  const heading=elem('div',undefined,'discover-group-heading');const number=elem('span',String(session).padStart(2,'0'),'discover-session-number');const names=elem('div');names.append(elem('span','ENCUENTRO '+String(session).padStart(2,'0'),'discover-eyebrow'),elem('h3',subtitles[session-1]));heading.append(number,names,elem('span','A tu ritmo','discover-pill'));group.append(heading);
  const grid=elem('div',undefined,'discover-grid');if(visualTasks.filter(t=>t.session===session).length===2)grid.classList.add('two-tiles');
  visualTasks.filter(t=>t.session===session).forEach((task,i)=>{
- const tile=elem('article',undefined,'discover-tile');const button=childButton('',()=>openVisualTask(task));button.classList.add('task-tile');
+ const tile=elem('article',undefined,'discover-tile');const button=childButton('',()=>openVisualTask(task));button.classList.add('task-tile');button.setAttribute('aria-label',task.name);
  const imageBox=elem('div',undefined,'discover-image-box');const badge=elem('span',String(i+1).padStart(2,'0'),'discover-task-number');imageBox.append(badge,childImage(task.picture));button.append(imageBox);
  const tileTitle=elem('div',undefined,'discover-tile-title');tileTitle.append(elem('span',task.name),discoverIcon('next'));button.append(tileTitle);
  const total=task.items?.length||task.sentences?.length||1;button.append(elem('span',total+' '+(task.type==='paired'?'partes para leer':'ejercicios'),'discover-tile-meta'));tile.append(button);
@@ -612,7 +657,7 @@ function drawVisualTask(){childChoice=null;childAttempt=false;childHelp=false;co
  const next=()=>{stopChildSound();const length=task.items?.length||task.sentences?.length||1;if(childIndex+1<length){childIndex++;drawVisualTask();}else{card.replaceChildren(childImage('medalla'),elem('h2','¡Lo descubriste!'),childButton('🔊 Escuchar',()=>childSpeak('¡Terminaste! Gracias por intentarlo.',null,'actividad-terminada')),childButton('Volver a descubrir',returnToDiscover));celebrateChild(card);childSpeak('¡Terminaste! Gracias por intentarlo.',null,'actividad-terminada');}};
  if(['match','initial','story'].includes(task.type)){const item=task.items[childIndex];if(task.type==='story'){const storyBox=elem('div',undefined,'story-audio');storyBox.append(childImage('jardin'),childButton('▶ Escuchar el cuento',()=>{childHelp=true;childSpeak(task.sentences.join(' '));}));card.append(storyBox);}const audio=childButton(task.type==='story'?'🔊 Escuchar pregunta':'🔊 Escuchar',()=>{if(task.type==='initial'){childSpeak('Escucha: '+item.word+'. Ahora escucha: '+item.options.join('. ')+'. Toca la que empieza como '+item.word+'.',null,'palabras-amigas-'+String(childIndex+1).padStart(2,'0'));}else{childSpeak(task.type==='story'?item.question+'. Toca el dibujo de tu respuesta.':item.word);}});card.append(audio);const options=elem('div',undefined,'picture-options');item.options.forEach(word=>{const b=childButton('',()=>{childChoice=word;options.querySelectorAll('button').forEach(btn=>btn.setAttribute('aria-pressed',String(btn===b)));});b.setAttribute('aria-label',word);b.setAttribute('aria-pressed','false');b.append(childImage(word));if(task.type==='initial')b.addEventListener('click',()=>childSpeak(word));options.append(b);});card.append(options,message,childButton('✓ Entregar respuesta',()=>{if(!childChoice){message.textContent='Toca una opción.';childSpeak('Toca un dibujo.');return;}recordChild(childChoice,item.answer||item.word);next();}));}
  else if(task.type==='tokens'){const item=task.items[childIndex];let count=0;card.append(childButton('🔊 Escuchar palabra',()=>childSpeak(item.word)));if(childIndex===0)card.append(childButton('🔊 Ver cómo se hace',()=>childSpeak('Casa: ca… sa. Dos palmadas. Dos fichas. Ahora tú.')));const countLabel=elem('p','0 fichas','child-feedback');const tokens=elem('div',undefined,'token-board');const update=()=>{tokens.replaceChildren();for(let i=0;i<count;i++)tokens.append(elem('span','●','sound-token'));countLabel.textContent=count+' fichas';};card.append(tokens,countLabel);const tools=elem('div',undefined,'actions');tools.append(childButton('＋ Una ficha',()=>{count=Math.min(6,count+1);update();}),childButton('− Quitar ficha',()=>{count=Math.max(0,count-1);update();}),childButton('✓ Entregar',()=>{recordChild(count,item.parts);next();}));card.append(tools);}
- else if(task.type==='readword'||task.type==='paired'){const isStory=task.type==='paired';const content=isStory?task.sentences[childIndex]:task.items[childIndex].word;const display=elem('p',content,isStory?'child-story':'word-display');card.append(display);const listen=childButton('🔊 Escuchar',()=>{childHelp=true;if(!isStory){childSpeak(content);return;}const words=content.split(' ');let i=0;display.replaceChildren();const spans=words.map(w=>{const sp=elem('span',w+' ');display.append(sp);return sp;});const speakNext=()=>{if(i>=spans.length){spans.forEach(sp=>sp.classList.remove('spoken-word'));return;}spans.forEach(sp=>sp.classList.remove('spoken-word'));spans[i].classList.add('spoken-word');childSpeak(words[i++],speakNext);};speakNext();});listen.disabled=true;const tried=childButton('✓ Ya intenté',()=>{childAttempt=true;listen.disabled=false;tried.disabled=true;childSpeak(isStory?'Toca Escuchar. Sigue las palabras con la mirada.':'Ahora puedes escuchar la palabra.');});card.append(tried,listen,childButton('→ Continuar',()=>{if(!childAttempt){message.textContent='Toca “Ya intenté” cuando termines tu intento.';return;}recordChild('Intento de lectura; precisión pendiente de observar por el asesor',null);next();}),message);}
+ else if(task.type==='readword'||task.type==='paired'){const isStory=task.type==='paired';const content=isStory?task.sentences[childIndex]:task.items[childIndex].word;const display=elem('p',content,isStory?'child-story':'word-display');card.append(display);const listen=childButton('🔊 Escuchar',()=>{childHelp=true;if(!isStory){childSpeak(content);return;}const words=content.split(' ');let i=0;display.replaceChildren();const spans=words.map(w=>{const sp=elem('span',w+' ');display.append(sp);return sp;});const speakNext=()=>{if(i>=spans.length){spans.forEach(sp=>sp.classList.remove('spoken-word'));return;}spans.forEach(sp=>sp.classList.remove('spoken-word'));spans[i].classList.add('spoken-word');childSpeak(words[i++],speakNext);};speakNext();});listen.disabled=true;const tried=childButton('✓ Ya intenté',()=>{childAttempt=true;listen.disabled=false;tried.disabled=true;childSpeak(isStory?'Toca la bocina. Sigue las palabras con la mirada.':'Ahora puedes escuchar la palabra.');});card.append(tried,listen,childButton('→ Continuar',()=>{if(!childAttempt){message.textContent='Después de intentar, toca la palomita.';childSpeak('Intenta leer. Después, toca la palomita.');return;}recordChild('Intento de lectura; precisión pendiente de observar por el asesor',null);next();}),message);}
  else{const item=task.items[childIndex];card.append(childImage(item.picture),childButton('🔊 Escuchar mi tarea',()=>childSpeak(item.prompt+' Cuéntale a Israel qué escribiste.')),elem('p','✏️ + 📄','paper-icons'),childButton('✓ Ya hice mi mensaje',()=>{recordChild(item.prompt+' · Producción en papel pendiente de revisar por el asesor',null);next();}));}
  const length=task.items?.length||task.sentences?.length||1;const progress=elem('div',undefined,'discover-progress');progress.setAttribute('role','progressbar');progress.setAttribute('aria-label','Avance de la actividad');progress.setAttribute('aria-valuenow',String(childIndex+1));progress.setAttribute('aria-valuemin','0');progress.setAttribute('aria-valuemax',String(length));const bar=elem('span');bar.style.width=((childIndex+1)/length*100)+'%';progress.append(bar);card.append(progress,elem('p',(childIndex+1)+' de '+length,'discover-step-count'));}
 
@@ -650,7 +695,7 @@ window.addEventListener('afterprint',()=>{collapsedForPrint.forEach(d=>d.open=fa
 
 
 $('logout').addEventListener('click',()=>{
- if(activeRole==='alumno'&&childTrials.length&&!confirm('¿Cerrar sesión? Si quieres conservar las respuestas, descarga «Entregar mis respuestas» antes de salir.'))return;
+ if(activeRole==='alumno'&&childTrials.length&&!confirm('¿Cerrar sesión? Si quieres conservar las respuestas, vuelve al inicio y toca el botón con la flecha hacia abajo antes de salir.'))return;
  if(activeRole==='israel'){
   syncGoals();save();persistAssessment();
   const unsaved=!persistent&&(state.sessions.length||fields.some(k=>state[k])||Object.keys(assessment.observations).length||assessment.notes.some(Boolean)||['context','strengths','needs','familySummary','recommendations','nextGoals','reviewDate'].some(k=>assessment[k]));
