@@ -33,7 +33,7 @@
 
 /* Identidad L&D Studio en el espacio del alumno. */
 .student-brand{display:none}
-#workspace[data-role="alumno"]{min-height:100dvh;background:radial-gradient(circle at 95% 0,rgba(91,184,176,.17),transparent 32rem),linear-gradient(180deg,#f7fafc,#eef4f7)}
+#workspace[data-role="alumno"]{min-height:100dvh;background:radial-gradient(ellipse at 6% 12%,rgba(91,184,176,.32),transparent 40rem),radial-gradient(ellipse at 95% 4%,rgba(212,168,67,.14),transparent 34rem),radial-gradient(ellipse at 90% 70%,rgba(91,184,176,.2),transparent 38rem),linear-gradient(160deg,#eaf5f3 0%,#f1f8f6 48%,#e4f0ee 100%)}
 #workspace[data-role="alumno"]>header{background:transparent;color:#fff;padding:20px 24px 0}
 #workspace[data-role="alumno"]>header>:not(#profile-bar){display:none}
 #workspace[data-role="alumno"] #profile-bar{display:flex;gap:16px;max-width:1050px;margin:0 auto;padding:14px 18px;background:#0b1f3a;border-radius:20px;box-shadow:0 12px 30px #0b1f3a24}
@@ -55,7 +55,7 @@
 #alumno .child-button:disabled{opacity:.45}
 .discover-icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:22px;height:22px}
 .discover-icon svg{display:block;width:100%;height:100%}
-.discover-hero{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:350px;padding:42px;border-radius:26px;background:radial-gradient(ellipse at 15% 15%,#d3efeb 0,transparent 65%),linear-gradient(125deg,#e5f6f4,#f4fbfa);border:1px solid #238d852e;box-shadow:0 2px 4px #0b1f3a05,0 18px 44px #0b1f3a0d;margin-bottom:18px}
+.discover-hero{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:350px;padding:42px;border-radius:26px;background:radial-gradient(ellipse at 10% 12%,rgba(91,184,176,.28),transparent 65%),radial-gradient(ellipse at 90% 80%,rgba(35,141,133,.12),transparent 65%),linear-gradient(125deg,#cceee7 0%,#dcf3ee 55%,#eaf8f3 100%);border:1px solid #238d852e;box-shadow:0 2px 4px #0b1f3a05,0 18px 44px #0b1f3a0d;margin-bottom:18px}
 .discover-hero:after{content:"";position:absolute;z-index:-1;right:20px;top:20px;width:285px;aspect-ratio:1;background:url("https://learning-development-studio.github.io/english-hub/assets/logo.png") center/contain no-repeat;opacity:.11;pointer-events:none}
 .discover-hero-copy{max-width:660px;flex:1}
 .discover-eyebrow{font-size:11px;font-weight:800;letter-spacing:.12em;color:#238d85}
@@ -140,6 +140,16 @@
 @keyframes star-arrive{0%{opacity:0;transform:scale(.7) translateY(8px)}100%{opacity:1;transform:scale(1) translateY(0)}}
 @media(prefers-reduced-motion:reduce){.confetti-layer{display:none}.completion-stars span{animation:none}}
 @media print{.confetti-layer{display:none}}
+
+#student-catalog[hidden],#student-activity[hidden]{display:none!important}
+.discover-activity-screen{max-width:970px;margin:0 auto;min-height:calc(100dvh - 155px);outline:none}
+#alumno .discover-activity-screen .task-stage{margin-top:0;min-height:calc(100dvh - 165px);background:linear-gradient(155deg,#fff 60%,#edf8f5)}
+#alumno .discover-activity-screen .task-stage.activity-complete{background:radial-gradient(ellipse at 50% 0,#d8f0e7,transparent 75%),linear-gradient(145deg,#fff,#e5f5ed);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+#alumno .discover-activity-screen .activity-complete h2{margin-bottom:10px}
+#alumno .discover-activity-screen .activity-complete .completion-stars{order:-2}
+@media(max-width:520px){.discover-activity-screen{min-height:calc(100dvh - 110px)}#alumno .discover-activity-screen .task-stage{min-height:calc(100dvh - 115px)}}
+#alumno .discover-hero-copy{max-width:min(660px,calc(100% - 210px))}.discover-hero:after{opacity:.15}
+@media(max-width:800px){#alumno .discover-hero-copy{max-width:100%}.discover-hero:after{opacity:.1}}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -553,7 +563,7 @@ const visualTasks=[
   }
 ];
 function buildStudent(){
- const root=$('alumno');root.replaceChildren();
+ const root=$('alumno');root.replaceChildren();const catalog=elem('div');catalog.id='student-catalog';root.append(catalog);
  const hero=elem('div',undefined,'discover-hero');const copy=elem('div',undefined,'discover-hero-copy');
  const title=elem('h2');title.append(elem('span','¡Vamos a ','hero-title-start'),elem('span','descubrir!','hero-title-accent'));
  copy.append(elem('span','TU ESPACIO PARA APRENDER','discover-eyebrow'),title,elem('p','Escucha. Juega. Descubre a tu ritmo.','discover-lead'));
@@ -562,13 +572,13 @@ function buildStudent(){
  const greeting=childButton('🔊 Escuchar bienvenida',()=>childSpeak('¡Hola! Vamos a descubrir. Elige una actividad. Toca el botón de escuchar.',null,'bienvenida'));greeting.classList.add('discover-welcome-audio');
  heroActions.append(start,greeting);copy.append(heroActions);
  const path=elem('div',undefined,'discover-path');['Escucho','Elijo','Descubro'].forEach((name,i)=>{const chip=elem('span');chip.append(elem('b',String(i+1)),elem('span',name));path.append(chip);});copy.append(path);
- hero.append(copy,childImage('libro'));root.append(hero);
+ hero.append(copy);catalog.append(hero);
  const overview=elem('div',undefined,'discover-overview');overview.setAttribute('aria-label','Tu recorrido');
  const exercises=visualTasks.reduce((n,t)=>n+(t.items?.length||t.sentences?.length||0),0);
- [[3,'encuentros'],[visualTasks.length,'actividades'],[exercises,'ejercicios para explorar']].forEach(([number,label])=>{const item=elem('div');item.append(elem('strong',String(number)),elem('span',label));overview.append(item);});root.append(overview);
+ [[3,'encuentros'],[visualTasks.length,'actividades'],[exercises,'ejercicios para explorar']].forEach(([number,label])=>{const item=elem('div');item.append(elem('strong',String(number)),elem('span',label));overview.append(item);});catalog.append(overview);
  const route=elem('div',undefined,'discover-route');route.setAttribute('role','navigation');route.setAttribute('aria-label','Elegir encuentro');
  const subtitles=['Sonidos y juegos','Palabras e historias','Lectura y mensajes'];const shortNames=['Sonidos','Historias','Mensajes'];
- for(let session=1;session<=3;session++){const jump=childButton('',()=>document.getElementById('discover-session-'+session).scrollIntoView({behavior:'smooth',block:'start'}));jump.append(elem('b',String(session)),elem('span',shortNames[session-1]),discoverIcon('next'));route.append(jump);}root.append(route);
+ for(let session=1;session<=3;session++){const jump=childButton('',()=>document.getElementById('discover-session-'+session).scrollIntoView({behavior:'smooth',block:'start'}));jump.append(elem('b',String(session)),elem('span',shortNames[session-1]),discoverIcon('next'));route.append(jump);}catalog.append(route);
  for(let session=1;session<=3;session++){
  const group=elem('section',undefined,'discover-group tone-'+session);group.id='discover-session-'+session;
  const heading=elem('div',undefined,'discover-group-heading');const number=elem('span',String(session).padStart(2,'0'),'discover-session-number');const names=elem('div');names.append(elem('span','ENCUENTRO '+String(session).padStart(2,'0'),'discover-eyebrow'),elem('h3',subtitles[session-1]));heading.append(number,names,elem('span','A tu ritmo','discover-pill'));group.append(heading);
@@ -579,15 +589,27 @@ function buildStudent(){
  const tileTitle=elem('div',undefined,'discover-tile-title');tileTitle.append(elem('span',task.name),discoverIcon('next'));button.append(tileTitle);
  const total=task.items?.length||task.sentences?.length||1;button.append(elem('span',total+' '+(task.type==='paired'?'partes para leer':'ejercicios'),'discover-tile-meta'));tile.append(button);
  const listen=childButton('🔊 Escuchar nombre',()=>childSpeak(task.name));listen.classList.add('discover-listen');listen.setAttribute('aria-label','Escuchar nombre: '+task.name);tile.append(listen);grid.append(tile);
- });group.append(grid);root.append(group);
+ });group.append(grid);catalog.append(group);
  }
- const footer=elem('div',undefined,'discover-footer');const footerCopy=elem('div');footerCopy.append(elem('strong','Cada intento cuenta.'),elem('p','Tu espacio para aprender, paso a paso.','discover-footer-note'));footer.append(footerCopy,childButton('⬇ Entregar mis respuestas',()=>downloadJSON({type:'lds-child-activities',version:1,trials:childTrials},'mis-descubrimientos.json')));root.append(footer);
- const stage=elem('div');stage.id='student-activity';root.append(stage);
+ const footer=elem('div',undefined,'discover-footer');const footerCopy=elem('div');footerCopy.append(elem('strong','Cada intento cuenta.'),elem('p','Tu espacio para aprender, paso a paso.','discover-footer-note'));footer.append(footerCopy,childButton('⬇ Entregar mis respuestas',()=>downloadJSON({type:'lds-child-activities',version:1,trials:childTrials},'mis-descubrimientos.json')));catalog.append(footer);
+ const stage=elem('div');stage.id='student-activity';stage.className='discover-activity-screen';stage.hidden=true;stage.tabIndex=-1;stage.setAttribute('role','region');stage.setAttribute('aria-label','Actividad');root.append(stage);
 }
 function recordChild(response,expected){childTrials.push({task:childCurrent.id,item:childIndex+1,response:String(response),expected:expected==null?'Observación del adulto':String(expected),audioHelp:childHelp,at:new Date().toISOString()});}
-function openVisualTask(task){stopChildSound();childCurrent=task;childIndex=0;drawVisualTask();$('student-activity').scrollIntoView({behavior:'smooth',block:'start'});}
-function drawVisualTask(){childChoice=null;childAttempt=false;childHelp=false;const task=childCurrent,root=$('student-activity');root.replaceChildren();const card=elem('div',undefined,'card task-stage');card.append(elem('span','DESCUBRE PASO A PASO','discover-eyebrow'),elem('h2',task.name));const controls=elem('div',undefined,'actions');controls.append(childButton('🔊 Escuchar instrucciones',()=>childSpeak(task.instruction,null,task.id==='escucha-imagen'?'escucha-encuentra-instruccion':task.id==='inicio-palabras'?'palabras-amigas-instruccion':null)),childButton('⏸ Pausa',()=>{stopChildSound();childSpeak('Descansa un momento. Seguimos cuando estés listo.');}),childButton('✕ Volver a descubrir',()=>{stopChildSound();root.replaceChildren();}));card.append(controls);root.append(card);const message=elem('p','', 'child-feedback');message.setAttribute('role','status');
- const next=()=>{stopChildSound();const length=task.items?.length||task.sentences?.length||1;if(childIndex+1<length){childIndex++;drawVisualTask();}else{card.replaceChildren(childImage('medalla'),elem('h2','¡Lo descubriste!'),childButton('🔊 Escuchar',()=>childSpeak('¡Terminaste! Gracias por intentarlo.',null,'actividad-terminada')),childButton('Volver a descubrir',()=>root.replaceChildren()));celebrateChild(card);childSpeak('¡Terminaste! Gracias por intentarlo.',null,'actividad-terminada');}};
+let studentCatalogScroll=0,studentCatalogTrigger=null;
+function openVisualTask(task){
+ stopChildSound();studentCatalogScroll=window.scrollY||0;studentCatalogTrigger=document.activeElement;
+ childCurrent=task;childIndex=0;$('student-catalog').hidden=true;$('student-activity').hidden=false;
+ $('student-activity').setAttribute('aria-label',task.name);drawVisualTask();
+ window.scrollTo({top:0,behavior:'auto'});$('student-activity').focus({preventScroll:true});
+}
+function returnToDiscover(){
+ stopChildSound();$('student-activity').replaceChildren();$('student-activity').hidden=true;$('student-catalog').hidden=false;
+ if(studentCatalogTrigger&&studentCatalogTrigger.isConnected)studentCatalogTrigger.focus({preventScroll:true});
+ window.scrollTo({top:studentCatalogScroll,behavior:'auto'});studentCatalogTrigger=null;
+}
+
+function drawVisualTask(){childChoice=null;childAttempt=false;childHelp=false;const task=childCurrent,root=$('student-activity');root.replaceChildren();const card=elem('div',undefined,'card task-stage');card.append(elem('span','DESCUBRE PASO A PASO','discover-eyebrow'),elem('h2',task.name));const controls=elem('div',undefined,'actions');controls.append(childButton('🔊 Escuchar instrucciones',()=>childSpeak(task.instruction,null,task.id==='escucha-imagen'?'escucha-encuentra-instruccion':task.id==='inicio-palabras'?'palabras-amigas-instruccion':null)),childButton('⏸ Pausa',()=>{stopChildSound();childSpeak('Descansa un momento. Seguimos cuando estés listo.');}),childButton('✕ Volver a descubrir',returnToDiscover));card.append(controls);root.append(card);const message=elem('p','', 'child-feedback');message.setAttribute('role','status');
+ const next=()=>{stopChildSound();const length=task.items?.length||task.sentences?.length||1;if(childIndex+1<length){childIndex++;drawVisualTask();}else{card.replaceChildren(childImage('medalla'),elem('h2','¡Lo descubriste!'),childButton('🔊 Escuchar',()=>childSpeak('¡Terminaste! Gracias por intentarlo.',null,'actividad-terminada')),childButton('Volver a descubrir',returnToDiscover));celebrateChild(card);childSpeak('¡Terminaste! Gracias por intentarlo.',null,'actividad-terminada');}};
  if(['match','initial','story'].includes(task.type)){const item=task.items[childIndex];if(task.type==='story'){const storyBox=elem('div',undefined,'story-audio');storyBox.append(childImage('jardin'),childButton('▶ Escuchar el cuento',()=>{childHelp=true;childSpeak(task.sentences.join(' '));}));card.append(storyBox);}const audio=childButton(task.type==='story'?'🔊 Escuchar pregunta':'🔊 Escuchar',()=>{if(task.type==='initial'){childSpeak('Escucha: '+item.word+'. Ahora escucha: '+item.options.join('. ')+'. Toca la que empieza como '+item.word+'.',null,'palabras-amigas-'+String(childIndex+1).padStart(2,'0'));}else{childSpeak(task.type==='story'?item.question+'. Toca el dibujo de tu respuesta.':item.word);}});card.append(audio);const options=elem('div',undefined,'picture-options');item.options.forEach(word=>{const b=childButton('',()=>{childChoice=word;options.querySelectorAll('button').forEach(btn=>btn.setAttribute('aria-pressed',String(btn===b)));});b.setAttribute('aria-label',word);b.setAttribute('aria-pressed','false');b.append(childImage(word));if(task.type==='initial')b.addEventListener('click',()=>childSpeak(word));options.append(b);});card.append(options,message,childButton('✓ Entregar respuesta',()=>{if(!childChoice){message.textContent='Toca una opción.';childSpeak('Toca un dibujo.');return;}recordChild(childChoice,item.answer||item.word);next();}));}
  else if(task.type==='tokens'){const item=task.items[childIndex];let count=0;card.append(childButton('🔊 Escuchar palabra',()=>childSpeak(item.word)));if(childIndex===0)card.append(childButton('🔊 Ver cómo se hace',()=>childSpeak('Casa: ca… sa. Dos palmadas. Dos fichas. Ahora tú.')));const countLabel=elem('p','0 fichas','child-feedback');const tokens=elem('div',undefined,'token-board');const update=()=>{tokens.replaceChildren();for(let i=0;i<count;i++)tokens.append(elem('span','●','sound-token'));countLabel.textContent=count+' fichas';};card.append(tokens,countLabel);const tools=elem('div',undefined,'actions');tools.append(childButton('＋ Una ficha',()=>{count=Math.min(6,count+1);update();}),childButton('− Quitar ficha',()=>{count=Math.max(0,count-1);update();}),childButton('✓ Entregar',()=>{recordChild(count,item.parts);next();}));card.append(tools);}
  else if(task.type==='readword'||task.type==='paired'){const isStory=task.type==='paired';const content=isStory?task.sentences[childIndex]:task.items[childIndex].word;const display=elem('p',content,isStory?'child-story':'word-display');card.append(display);const listen=childButton('🔊 Escuchar',()=>{childHelp=true;if(!isStory){childSpeak(content);return;}const words=content.split(' ');let i=0;display.replaceChildren();const spans=words.map(w=>{const sp=elem('span',w+' ');display.append(sp);return sp;});const speakNext=()=>{if(i>=spans.length){spans.forEach(sp=>sp.classList.remove('spoken-word'));return;}spans.forEach(sp=>sp.classList.remove('spoken-word'));spans[i].classList.add('spoken-word');childSpeak(words[i++],speakNext);};speakNext();});listen.disabled=true;const tried=childButton('✓ Ya intenté',()=>{childAttempt=true;listen.disabled=false;tried.disabled=true;childSpeak(isStory?'Toca Escuchar. Sigue las palabras con la mirada.':'Ahora puedes escuchar la palabra.');});card.append(tried,listen,childButton('→ Continuar',()=>{if(!childAttempt){message.textContent='Toca “Ya intenté” cuando termines tu intento.';return;}recordChild('Intento de lectura; precisión pendiente de observar por el asesor',null);next();}),message);}
