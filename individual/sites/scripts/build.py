@@ -1,9 +1,10 @@
 from pathlib import Path
 import json,shutil
 root=Path(__file__).resolve().parent.parent
-api=(root/'worker/api.js').read_text().replace('export const taskMeta','const taskMeta').replace('export async function api','async function api')
+api=(root/'worker/api.js').read_text().replace("import {checkAdvisor} from './advisor-model.js';",'').replace('export const taskMeta','const taskMeta').replace('export async function api','async function api')
+model=(root/'worker/advisor-model.js').read_text().replace('export ','')
 page=(root/'page.html').read_text()
-worker='const page='+json.dumps(page,ensure_ascii=True)+';\n'+api+"""
+worker='const page='+json.dumps(page,ensure_ascii=True)+';\n'+model+'\n'+api+"""
 export default {
  async fetch(request,env,ctx){
   const url=new URL(request.url);

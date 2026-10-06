@@ -30,7 +30,7 @@ if not (root/'.git').exists():
  run(['git','ls-remote','sites'])
 run(['git','add','.'])
 if run(['git','status','--porcelain']):
- run(['git','commit','-m','Crear seguimiento familiar con guardado compartido y perfiles'])
+ run(['git','commit','-m',value.get('message','Crear seguimiento familiar con guardado compartido y perfiles')])
 sha=run(['git','rev-parse','HEAD'])
 run(['git','push','sites','HEAD:refs/heads/'+credential['branch']])
 print(json.dumps({'project_id':project_id,'commit_sha':sha,'source_pushed':True}),flush=True)

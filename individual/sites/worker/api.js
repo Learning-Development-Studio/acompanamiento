@@ -1,3 +1,4 @@
+import {checkAdvisor} from './advisor-model.js';
 export const taskMeta={
  'escucha-imagen':{name:'Escucha y encuentra',session:1,count:5},
  'inicio-palabras':{name:'Palabras amigas',session:1,count:5},
@@ -63,7 +64,7 @@ export async function api(request,env){
   }
   if(path==='/api/teacher'&&method==='PUT'){
    requireRole(role,['israel']);const v=await body(request),now=new Date().toISOString();const statements=[];
-   for(const key of ['state','assessment','familyDraft']){if(v[key]===undefined)continue;if(!v[key]||typeof v[key]!=='object'||Array.isArray(v[key]))throw new HTTPError(400,'Registro no válido.');statements.push(env.DB.prepare('INSERT INTO program_documents (key,value_json,updated_at) VALUES (?,?,?) ON CONFLICT(key) DO UPDATE SET value_json=excluded.value_json,updated_at=excluded.updated_at').bind(key,JSON.stringify(v[key]),now));}
+   for(const key of ['state','assessment','familyDraft','advisor']){if(v[key]===undefined)continue;if(!v[key]||typeof v[key]!=='object'||Array.isArray(v[key]))throw new HTTPError(400,'Registro no válido.');let document=v[key];if(key==='advisor'){try{document=checkAdvisor(document);}catch(error){throw new HTTPError(400,error.message);}}statements.push(env.DB.prepare('INSERT INTO program_documents (key,value_json,updated_at) VALUES (?,?,?) ON CONFLICT(key) DO UPDATE SET value_json=excluded.value_json,updated_at=excluded.updated_at').bind(key,JSON.stringify(document),now));}
    if(!statements.length)throw new HTTPError(400,'No hay registros para guardar.');await env.DB.batch(statements);return json({saved:true});
   }
   if(path==='/api/reports'&&method==='POST'){

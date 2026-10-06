@@ -1,4 +1,4 @@
-function familyDate(value){if(!value)return 'Por acordar';const date=new Date(value);return Number.isNaN(date.valueOf())?value:date.toLocaleString('es-MX',{timeZone:'America/Mexico_City',dateStyle:'medium',timeStyle:'short'});}
+function familyDate(value){if(!value)return 'Por acordar';const wallClock=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value);const date=new Date(wallClock?value+':00Z':value);return Number.isNaN(date.valueOf())?value:date.toLocaleString('es-MX',{timeZone:wallClock?'UTC':'America/Mexico_City',dateStyle:'medium',timeStyle:'short'});}
 function familyPanel(id,title){const section=elem('section',undefined,'family-pane');section.id='family-pane-'+id;section.hidden=id!=='summary';section.append(elem('h3',title));return section;}
 function familyText(id,fallback){const p=elem('p',fallback,'preserve-lines');p.id=id;return p;}
 function familyTab(id){document.querySelectorAll('.family-pane').forEach(p=>p.hidden=p.id!=='family-pane-'+id);document.querySelectorAll('[data-family-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.familyTab===id)));}
@@ -45,7 +45,7 @@ function buildFamilyEditor(){
  [['familySummary','Resumen para la familia'],['recommendations','Recomendaciones generales para casa'],['reviewDate','Próxima revisión del acompañamiento']].forEach(([key,label])=>makeArea(card,key,label,assessment[key],value=>assessment[key]=value));
  card.append(elem('p','Las fortalezas, prioridades y objetivos se editan en Valoración inicial.','muted'));
  [['recentAchievement','Un logro reciente'],['currentGoal','El objetivo actual, en una frase'],['homeRecommendation','Actividad concreta para casa: qué hacer y cómo acompañarlo'],['moodSummary','Confianza, participación y cansancio observados'],['helpfulSupports','Los apoyos que le ayudaron'],['nextPurpose','Propósito del próximo encuentro'],['nextMaterials','Materiales para el próximo encuentro']].forEach(([key,label])=>makeArea(card,'family-'+key,label,familyDraft[key]||'',value=>{familyDraft[key]=value;scheduleTeacherSave();}));
- const l=elem('label','Fecha y hora del próximo encuentro'),date=elem('input');date.type='datetime-local';date.value=familyDraft.nextDate||'';date.addEventListener('input',()=>{familyDraft.nextDate=date.value;scheduleTeacherSave();});card.append(l,date);
+ const l=elem('label','Fecha y hora del próximo encuentro (Ciudad de México)'),date=elem('input');date.type='datetime-local';date.value=familyDraft.nextDate||'';date.addEventListener('input',()=>{familyDraft.nextDate=date.value;scheduleTeacherSave();});card.append(l,date);
  const actions=elem('div',undefined,'actions');actions.append(action('Vista previa familiar',()=>{familyReport=makeFamilyReport();buildFamily();show('reportes');}),action('Publicar reporte para los papás',async()=>{if(!assessment.familySummary.trim()){notify('Escribe y revisa el resumen antes de publicarlo.');return;}try{await flushTeacherSave();const result=await cloudRequest('/api/reports',{method:'POST',body:makeFamilyReport()});familyReport=result.report;await refreshFamily();notify('Reporte publicado. Los papás lo verán al entrar a su perfil.');}catch(error){notify(error.message);}}));card.append(actions);root.append(card);
  const evidence=elem('div',undefined,'card');evidence.append(elem('h3','Descubrimientos guardados del alumno'));const list=elem('div');list.id='teacher-cloud-runs';evidence.append(list,action('Actualizar descubrimientos y mensajes',()=>refreshFamily().catch(error=>notify(error.message))));root.append(evidence);
  const questions=elem('div',undefined,'card');questions.append(elem('h3','Mensajes de la familia'));const q=elem('div');q.id='teacher-family-questions';questions.append(q);root.append(questions);renderTeacherCloud();
@@ -66,14 +66,21 @@ async function loadCloudDashboard(){
  if(!cloudConnected)return;
  if(activeRole==='israel'){
   const value=await cloudRequest('/api/teacher');const docs=value.documents||{};
-  if(docs.state)state=validate(docs.state);if(docs.assessment)assessment=checkAssessment(docs.assessment);if(docs.familyDraft)familyDraft={...docs.familyDraft};
-  teacherRuns=value.runs||[];familySnapshot=value;familyReport=value.reports?.[0]||null;render();buildAssessment();buildFamilyEditor();buildFamily();storageMessage();
+  if(docs.state)state=validate(docs.state);if(docs.assessment)assessment=checkAssessment(docs.assessment);if(docs.familyDraft)familyDraft={...docs.familyDraft};advisor=docs.advisor?checkAdvisor(docs.advisor):emptyAdvisor();
+  teacherRuns=value.runs||[];familySnapshot=value;familyReport=value.reports?.[0]||null;render();buildAssessment();buildFamilyEditor();buildFamily();buildAdvisorWorkspace();storageMessage();
  }else if(activeRole==='padres'){await refreshFamily();}
  clearInterval(cloudPoll);if(['padres','israel'].includes(activeRole))cloudPoll=setInterval(()=>{if(document.visibilityState==='visible')refreshFamily().catch(()=>{if($('family-updated'))$('family-updated').textContent='No se pudo actualizar. Conservamos el último seguimiento disponible.';});},20000);
 }
-async function refreshFamily(){if(!cloudConnected||!['padres','israel'].includes(activeRole))return;const value=await cloudRequest(activeRole==='israel'?'/api/teacher':'/api/family');familySnapshot=value;familyReport=value.reports?.[0]||null;if(activeRole==='israel'){teacherRuns=value.runs||[];renderTeacherCloud();}renderFamilyReport();}
-function scheduleTeacherSave(){if(!cloudConnected||activeRole!=='israel')return;clearTimeout(teacherSaveTimer);teacherSaveTimer=setTimeout(()=>flushTeacherSave().catch(error=>notify(error.message)),500);}
-async function flushTeacherSave(){clearTimeout(teacherSaveTimer);teacherSaveTimer=null;if(!cloudConnected||activeRole!=='israel')return;syncGoals();const payload=JSON.parse(JSON.stringify({state,assessment,familyDraft}));teacherSaveChain=teacherSaveChain.catch(()=>{}).then(()=>cloudRequest('/api/teacher',{method:'PUT',body:payload}));await teacherSaveChain;storageMessage();}
+async function refreshFamily(){if(!cloudConnected||!['padres','israel'].includes(activeRole))return;const value=await cloudRequest(activeRole==='israel'?'/api/teacher':'/api/family');familySnapshot=value;familyReport=value.reports?.[0]||null;if(activeRole==='israel'){teacherRuns=value.runs||[];renderTeacherCloud();renderAdvisorHome();}renderFamilyReport();}
+let teacherSaveRevision=0,teacherSavedRevision=0;
+function scheduleTeacherSave(){if(!cloudConnected||activeRole!=='israel')return;teacherSaveRevision++;advisorStatus('Guardando tus cambios…');clearTimeout(teacherSaveTimer);teacherSaveTimer=setTimeout(()=>flushTeacherSave().catch(error=>notify(error.message)),500);}
+async function flushTeacherSave(){
+ clearTimeout(teacherSaveTimer);teacherSaveTimer=null;if(!cloudConnected||activeRole!=='israel')return;
+ syncGoals();const revision=teacherSaveRevision;const payload=JSON.parse(JSON.stringify({state,assessment,familyDraft,advisor}));
+ teacherSaveChain=teacherSaveChain.catch(()=>{}).then(()=>cloudRequest('/api/teacher',{method:'PUT',body:payload}));
+ try{await teacherSaveChain;teacherSavedRevision=Math.max(teacherSavedRevision,revision);storageMessage();advisorStatus(teacherSavedRevision<teacherSaveRevision?'Guardando tus cambios…':'Cambios guardados · '+new Date().toLocaleTimeString('es-MX',{timeZone:'America/Mexico_City',hour:'2-digit',minute:'2-digit'}));}
+ catch(error){advisorStatus('No se pudo guardar todavía. Conservamos los cambios en esta pestaña.');if(cloudConnected&&activeRole==='israel'&&teacherSavedRevision<teacherSaveRevision&&!teacherSaveTimer)teacherSaveTimer=setTimeout(()=>flushTeacherSave().catch(()=>{}),4000);throw error;}
+}
 function beginCloudRun(){cloudRunId=crypto.randomUUID();cloudRunRevision=0;}
 function saveCloudRun(complete=false){
  if(!cloudConnected||!['alumno','israel'].includes(activeRole)||!childCurrent)return;

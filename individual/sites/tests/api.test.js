@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync,readdirSync} from 'node:fs';
 import {api} from '../worker/api.js';
+import {emptyAdvisor,advisorBlocks} from '../worker/advisor-model.js';
 const codes={alumno:'TEST-ALUMNO',padres:'TEST-PADRES',israel:'TEST-ASESOR'};
 const hashes=Object.fromEntries(await Promise.all(Object.entries(codes).map(async([role,code])=>[role,Buffer.from(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(code))).toString('hex')])));
 function fixture(){
@@ -42,4 +43,11 @@ test('se rechazan cierres incompletos y respuestas duplicadas',async()=>{
  const {request}=fixture();const trial={task:'escucha-imagen',item:1,response:'sol',expected:'sol',audioHelp:false,at:new Date().toISOString()},id=crypto.randomUUID();
  assert.equal((await request('alumno','/api/runs','POST',{id,task:trial.task,revision:1,trials:[trial],complete:true})).status,400);
  assert.equal((await request('alumno','/api/runs','POST',{id,task:trial.task,revision:1,trials:[trial,trial],complete:false})).status,400);
+});
+test('el plan, las metas y el borrador de sesión se guardan solo para Israel',async()=>{
+ const {request}=fixture();const advisor=emptyAdvisor();advisor.context.interests='Interés observado durante la entrevista.';advisor.sessionDraft={evidence:'Nota interna de sesión.'};advisor.goals=[{id:crypto.randomUUID(),area:'Lectura de palabras',objective:'Leer palabras nuevas.',baseline:'4 de 10 con apoyo.',criterion:'8 de 10 sin apoyo en dos encuentros.',support:'Sin modelo de la palabra.',material:'Sílabas directas.',status:'En trabajo',reviewDate:'2026-11-03',samples:[{id:crypto.randomUUID(),date:'2026-10-06',correct:6,total:10,mode:'Sin ayuda',material:'Sílabas directas.',note:'Evidencia de prueba local.'}]}];
+ advisor.plans=[{id:crypto.randomUUID(),date:'2026-10-08T16:00',week:1,kind:'Valoración 1',status:'Programada',objective:'Conocer el punto de partida.',patterns:'',materials:'',home:'',blocks:advisorBlocks.map(([title,minutes,description])=>({title,minutes,description}))}];
+ assert.equal((await request('israel','/api/teacher','PUT',{advisor})).status,200);const read=(await request('israel','/api/teacher')).value.documents.advisor;assert.equal(read.goals[0].samples[0].correct,6);assert.equal(read.plans[0].date,'2026-10-08T16:00');assert.equal(read.sessionDraft.evidence,'Nota interna de sesión.');
+ assert.equal((await request('padres','/api/teacher','PUT',{advisor})).status,403);assert.equal((await request('alumno','/api/teacher')).status,403);const family=(await request('padres','/api/family')).value;assert.equal(family.advisor,undefined);assert.equal(family.reports.length,0);
+ const invalid=structuredClone(advisor);invalid.goals[0].samples[0].correct=11;assert.equal((await request('israel','/api/teacher','PUT',{advisor:invalid})).status,400);invalid.goals[0].samples[0].correct=6;invalid.plans[0].date='2026-02-31T25:00';assert.equal((await request('israel','/api/teacher','PUT',{advisor:invalid})).status,400);assert.equal((await request('israel','/api/teacher')).value.documents.advisor.goals[0].samples[0].correct,6);
 });
