@@ -38,7 +38,7 @@
 <div class="welcome-foot"><span>Acompañamiento</span><span>2026–2027</span></div></section></div>
 <div class="welcome-signature"><strong>Learning &amp; Development Studio</strong> · Israel Ventura</div></div></div>
 <div id="workspace" hidden>
-<header><div id="profile-bar"><span id="active-profile"></span></div><div class="eyebrow">Learning & Development Studio</div><h1>Acompañamiento individual</h1><p>Lectura, escritura y comprensión. Una ruta de enseñanza gradual, con seguimiento pedagógico y colaboración con la familia.</p><span class="badge">Programa inicial · 12 semanas</span></header>
+<header><div id="profile-bar"><span id="active-profile"></span><button type="button" id="logout">Cerrar sesión</button></div><div class="eyebrow">Learning & Development Studio</div><h1>Acompañamiento individual</h1><p>Lectura, escritura y comprensión. Una ruta de enseñanza gradual, con seguimiento pedagógico y colaboración con la familia.</p><span class="badge">Programa inicial · 12 semanas</span></header>
 <main>
 <nav aria-label="Secciones del acompañamiento"><button type="button" data-view="alumno" aria-pressed="false">Mis encuentros</button><button type="button" data-view="reportes" aria-pressed="false">Reportes familiares</button><button type="button" data-view="diagnostico" aria-pressed="false">Valoración inicial</button><button type="button" data-view="publicar" aria-pressed="false">Preparar reporte</button><button type="button" data-view="programa" aria-pressed="true">Programa</button><button type="button" data-view="sesiones" aria-pressed="false">Sesiones</button><button type="button" data-view="avances" aria-pressed="false">Avances</button><button type="button" data-view="familia" aria-pressed="false">Guía familiar</button></nav>
 <div id="status" role="status" aria-live="polite"></div>
@@ -175,6 +175,25 @@ $('persist').addEventListener('change',()=>{if(persistent)persistAssessment();el
 let collapsedForPrint=[];
 window.addEventListener('beforeprint',()=>{collapsedForPrint=[...document.querySelectorAll('section:not([hidden]) details:not([open])')];collapsedForPrint.forEach(d=>d.open=true);});
 window.addEventListener('afterprint',()=>{collapsedForPrint.forEach(d=>d.open=false);collapsedForPrint=[];});
+
+
+$('logout').addEventListener('click',()=>{
+ if(activeRole==='israel'){
+  syncGoals();save();persistAssessment();
+  const unsaved=!persistent&&(state.sessions.length||fields.some(k=>state[k])||Object.keys(assessment.observations).length||assessment.notes.some(Boolean)||['context','strengths','needs','familySummary','recommendations','nextGoals','reviewDate'].some(k=>assessment[k]));
+  if(unsaved&&!confirm('Hay registros sin guardar. Descarga los respaldos en Avances y Valoración inicial antes de salir si quieres conservarlos. ¿Cerrar sesión de todos modos?'))return;
+ }
+ activeRole=null;selectedRole=null;persistent=false;
+ state={version:1,code:'',baseline:'',goals:'',review:'',sessions:[]};
+ assessment={version:1,observations:{},notes:['','',''],context:'',strengths:'',needs:'',familySummary:'',recommendations:'',nextGoals:'',reviewDate:''};
+ familyReport=null;currentTask=null;cardIndex=0;
+ $('persist').checked=false;$('profile-select').value='';$('access-code').value='';$('access-label').textContent='Código de acceso';$('access-error').textContent='';$('active-profile').textContent='';
+ $('session-form').reset();const d=new Date();$('date').value=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
+ render();buildStudent();buildAssessment();buildFamilyEditor();buildFamily();storageMessage();notify('');
+ document.querySelectorAll('main > section').forEach(section=>section.hidden=true);
+ document.querySelectorAll('[data-view]').forEach(button=>{button.hidden=true;button.setAttribute('aria-pressed','false');});
+ $('workspace').hidden=true;$('welcome').hidden=false;$('profile-select').focus();window.scrollTo(0,0);
+});
 
 </script>
 </body>
