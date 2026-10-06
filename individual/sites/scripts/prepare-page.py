@@ -42,6 +42,7 @@ change('Utiliza un código sin nombre. Evita datos de identidad, informes diagn�
 change('<h2>Sesiones registradas</h2><div id="records">','<h2>Sesiones registradas</h2><div class="advisor-actions"><button type="button" id="advisor-session-report">Preparar devolución del último encuentro</button><button type="button" id="advisor-session-pdf">Descargar seguimiento en PDF</button></div><div id="records">')
 change("Reportes familiares</button>","Seguimiento familiar</button>")
 change("childCurrent=task;childIndex=0;childRunStart=childTrials.length;", "childCurrent=task;childIndex=0;childRunStart=childTrials.length;beginCloudRun();")
+change("const now=new Date(),stamp=new Intl.DateTimeFormat('sv-SE'", "const now=new Date(trials.at(-1).at),stamp=new Intl.DateTimeFormat('sv-SE'")
 change("at:new Date().toISOString()});}", "at:new Date().toISOString()});saveCloudRun(false);}")
 change("else{card.replaceChildren(childImage('medalla')", "else{saveCloudRun(true);card.replaceChildren(childImage('medalla')")
 change("card.append(endActions);celebrateChild(card);", "const saved=elem('p',cloudConnected?'Guardando tus descubrimientos…':'Tus respuestas están listas.','completion-caption');saved.id='child-save-status';card.append(endActions,saved);celebrateChild(card);")

@@ -39,6 +39,7 @@
 #workspace[data-role="israel"] .observation-row{border-radius:14px;background:#fafbfc;border:1px solid #0b1f3a10;padding:16px}
 .advisor-panel-head{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin:12px 0 23px}.advisor-panel-head h2{margin:0}
 .advisor-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}.advisor-primary{background:#0b1f3a!important;color:#fff!important;border-color:#0b1f3a!important}
+.teacher-run{padding:18px 0;border-bottom:1px solid #0b1f3a12}.teacher-run:last-child{border:0}.teacher-run>button{margin:12px 0 0;background:#0b1f3a;color:#fff;border-color:#0b1f3a}
 .advisor-section-note{color:#61788d;font-size:13px;max-width:780px}.advisor-detail{white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:850px){.advisor-stats,.advisor-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}.advisor-grid,.advisor-grid.equal{grid-template-columns:1fr}}
 @media(max-width:550px){#workspace[data-role="israel"]>header{padding:12px 12px 0}#workspace[data-role="israel"] main{padding:16px 12px 30px}#workspace[data-role="israel"] .card,#workspace[data-role="israel"] #diagnostico>details{padding:21px}.advisor-hero{padding:26px 24px}.advisor-form-row{grid-template-columns:1fr}.advisor-stats,.advisor-shortcuts{gap:9px}.advisor-stat,.advisor-shortcut{padding:16px}.advisor-goal{padding:20px}.advisor-goal dl{grid-template-columns:1fr;gap:4px}.advisor-goal dd{margin-bottom:10px}.advisor-comparison{grid-template-columns:1fr}#workspace[data-role="israel"] #active-profile{display:none}}
