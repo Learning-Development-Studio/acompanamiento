@@ -158,6 +158,12 @@ function loadAssessment(){try{const raw=localStorage.getItem(assessmentKey);if(r
 /* Tareas visuales: la voz del dispositivo se activa solo al tocar Escuchar. */
 let childTrials=[],childCurrent=null,childIndex=0,childChoice=null,childAttempt=false,childHelp=false,childUtterance=null;
 const childPictures={
+ libro:['libro','<path d="M24 30q28-12 56 4 28-16 56-4v73q-28-12-56 4-28-16-56-4z" fill="#55a6ad"/><path d="M80 34v73M34 46q17-6 33 2m-33 13q17-6 33 2m26-15q17-8 33-3m-33 18q17-8 33-3" fill="none" stroke="#fff" stroke-width="4"/>'],
+ tomate:['tomate','<circle cx="80" cy="76" r="36" fill="#db6358"/><path d="M80 47l-23-16 8 21-16 8 28-1 22-18-4 18 16-5" fill="#4b9561"/><path d="M80 48V29" stroke="#4b9561" stroke-width="7"/>'],
+ planta:['planta','<path d="M53 85h54l-8 32H61z" fill="#c7926d"/><path d="M80 85V35" stroke="#448e5c" stroke-width="7"/><ellipse cx="64" cy="58" rx="24" ry="11" fill="#69a978" transform="rotate(30 64 58)"/><ellipse cx="98" cy="43" rx="23" ry="11" fill="#85bd77" transform="rotate(-30 98 43)"/>'],
+ abuelo:['abuelo','<circle cx="80" cy="54" r="27" fill="#e1b48b"/><path d="M52 48q0-33 28-33 28 0 28 33l-9-12-12 5-21-5z" fill="#cbd0d8"/><path d="M38 117q0-37 42-37t42 37" fill="#608fa2"/><g fill="none" stroke="#34506a" stroke-width="3"><circle cx="69" cy="53" r="10"/><circle cx="92" cy="53" r="10"/><path d="M79 53h3m-13 15q11 9 22 0"/></g>'],
+ jardin:['jardín','<path d="M0 98q40-17 80 0 40-17 80 0v32H0z" fill="#94c98d"/><circle cx="125" cy="25" r="13" fill="#efd067"/><path d="M38 106V44m46 62V72" stroke="#467d57" stroke-width="6"/><circle cx="38" cy="40" r="27" fill="#77b878"/><g fill="#e79ab2"><circle cx="84" cy="65" r="12"/><circle cx="74" cy="72" r="12"/><circle cx="94" cy="72" r="12"/></g><circle cx="84" cy="72" r="7" fill="#f0cb59"/>'],
+
  mano:['mano','<path d="M50 83V55q0-12 10-8V30q0-13 10-4V20q0-12 10 0v7q12-12 12 4v20q14-8 14 6v27q0 26-30 26T50 83" fill="#e5b88c"/>'],
  sopa:['sopa','<path d="M26 64h108q-8 43-54 43T26 64" fill="#79bbc6"/><ellipse cx="80" cy="64" rx="54" ry="12" fill="#efc75a"/><path d="M53 65l55-40" stroke="#738393" stroke-width="8"/>'],
  pato:['pato','<ellipse cx="72" cy="88" rx="43" ry="25" fill="#f3d25c"/><circle cx="105" cy="49" r="24" fill="#f3d25c"/><path d="M126 48h22l-20 13" fill="#e29943"/><circle cx="113" cy="44" r="4"/>'],
@@ -176,25 +182,287 @@ function childImage(key){const data=childPictures[key]||childPictures.sol;const 
 function childSpeak(message,done){if(!('speechSynthesis' in window)){notify('Este navegador no tiene voz disponible. El adulto puede leer la consigna.');return;}speechSynthesis.cancel();const utter=new SpeechSynthesisUtterance(message);childUtterance=utter;const voices=speechSynthesis.getVoices();utter.voice=voices.find(v=>v.lang==='es-MX')||voices.find(v=>v.lang.startsWith('es'))||null;utter.lang='es-MX';utter.rate=.82;utter.onend=()=>{if(done)done();};utter.onerror=()=>notify('No se pudo reproducir la voz. Revisa el sonido del dispositivo o solicita apoyo.');speechSynthesis.speak(utter);}
 function childButton(label,fn){const b=action(label,fn);b.className='child-button';return b;}
 const visualTasks=[
- {id:'escucha-imagen',name:'Escucha y encuentra',picture:'sol',session:1,type:'match',instruction:'Toca Escuchar. Después toca el dibujo de la palabra que oíste.',items:[{word:'sol',options:['luna','sol','flor']},{word:'mesa',options:['mesa','taza','pelota']},{word:'perro',options:['gato','pan','perro']}]},
- {id:'inicio-palabras',name:'Palabras amigas',picture:'mesa',session:1,type:'initial',instruction:'Escucha las palabras y busca la que comienza parecido.',items:[{word:'mesa',answer:'mano',options:['mano','sopa','luna']},{word:'pelota',answer:'pato',options:['luna','pato','mesa']},{word:'sol',answer:'sopa',options:['taza','luna','sopa']}]},
- {id:'fichas-palabra',name:'Fichas y palmadas',picture:'pelota',session:1,type:'tokens',instruction:'Escucha la palabra. Da una palmada por cada parte y toca una ficha por cada palmada. Por ejemplo: ca sa. Dos palmadas.',items:[{word:'sol',parts:1},{word:'mesa',parts:2},{word:'pelota',parts:3}]},
- {id:'tarjetas-lectura',name:'Mis tarjetas',picture:'pan',session:2,type:'readword',instruction:'Intenta leer la palabra. Cuando termines tu intento, toca Ya intenté. Después puedes escucharla. No hay prisa.',items:['sol','mesa','luna','pato','pelota','plato'].map(word=>({word}))},
- {id:'cuento-escucha',name:'Un cuento para escuchar',picture:'flor',session:2,type:'story',instruction:'Escucha el cuento. Después toca los dibujos para contestar.',sentences:['Ana salió al jardín con una taza de agua.','Vio una planta con la tierra seca.','Ana puso agua en la tierra y dejó la taza junto a la puerta.','Después llamó a su abuelo para mostrarle la planta.'],items:[{question:'¿Qué llevó Ana?',answer:'taza',options:['pelota','taza','pan']},{question:'¿Qué necesitaba la planta?',answer:'agua',options:['agua','pan','pelota']}]},
- {id:'leo-acompanado',name:'Leo y escucho',picture:'perro',session:3,type:'paired',instruction:'Intenta leer esta parte. Toca Ya intenté. Después puedes escuchar y seguir las palabras.',sentences:['Luis salió al patio con una pelota.','Su perro vino junto a él.','Luis lanzó la pelota y el perro corrió para buscarla.','Después, Luis puso agua en un plato.','El perro tomó agua y descansó a su lado.']},
- {id:'mensaje-papel',name:'Mi mensaje',picture:'flor',session:3,type:'paper',instruction:'Busca una hoja y un lápiz. Dibuja algo que te gusta. Escribe un mensaje sobre tu dibujo. Después cuéntale a Israel qué dice.'}
+  {
+    "id": "escucha-imagen",
+    "name": "Escucha y encuentra",
+    "picture": "sol",
+    "session": 1,
+    "type": "match",
+    "instruction": "Escucha la palabra. Mira los dibujos. Toca el dibujo que corresponde.",
+    "items": [
+      {
+        "word": "sol",
+        "options": [
+          "luna",
+          "sol",
+          "flor"
+        ]
+      },
+      {
+        "word": "mesa",
+        "options": [
+          "mesa",
+          "taza",
+          "pelota"
+        ]
+      },
+      {
+        "word": "perro",
+        "options": [
+          "gato",
+          "pan",
+          "perro"
+        ]
+      },
+      {
+        "word": "luna",
+        "options": [
+          "pan",
+          "flor",
+          "luna"
+        ]
+      },
+      {
+        "word": "pelota",
+        "options": [
+          "pelota",
+          "taza",
+          "mesa"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "inicio-palabras",
+    "name": "Palabras amigas",
+    "picture": "mesa",
+    "session": 1,
+    "type": "initial",
+    "instruction": "Escucha las palabras. Toca la que empieza como la primera.",
+    "items": [
+      {
+        "word": "mesa",
+        "answer": "mano",
+        "options": [
+          "mano",
+          "sopa",
+          "luna"
+        ]
+      },
+      {
+        "word": "pelota",
+        "answer": "pato",
+        "options": [
+          "luna",
+          "pato",
+          "mesa"
+        ]
+      },
+      {
+        "word": "sol",
+        "answer": "sopa",
+        "options": [
+          "taza",
+          "luna",
+          "sopa"
+        ]
+      },
+      {
+        "word": "luna",
+        "answer": "libro",
+        "options": [
+          "perro",
+          "libro",
+          "mano"
+        ]
+      },
+      {
+        "word": "taza",
+        "answer": "tomate",
+        "options": [
+          "mesa",
+          "pan",
+          "tomate"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "fichas-palabra",
+    "name": "Fichas y palmadas",
+    "picture": "pelota",
+    "session": 1,
+    "type": "tokens",
+    "instruction": "Escucha la palabra. Da una palmada por cada parte. Pon una ficha por cada palmada.",
+    "items": [
+      {
+        "word": "sol",
+        "parts": 1
+      },
+      {
+        "word": "mesa",
+        "parts": 2
+      },
+      {
+        "word": "pelota",
+        "parts": 3
+      },
+      {
+        "word": "pan",
+        "parts": 1
+      },
+      {
+        "word": "perro",
+        "parts": 2
+      }
+    ]
+  },
+  {
+    "id": "tarjetas-lectura",
+    "name": "Mis tarjetas",
+    "picture": "pan",
+    "session": 2,
+    "type": "readword",
+    "instruction": "Intenta leer la palabra. Toca Ya intenté.",
+    "items": [
+      {
+        "word": "sol"
+      },
+      {
+        "word": "mesa"
+      },
+      {
+        "word": "luna"
+      },
+      {
+        "word": "pato"
+      },
+      {
+        "word": "pelota"
+      },
+      {
+        "word": "plato"
+      }
+    ]
+  },
+  {
+    "id": "cuento-escucha",
+    "name": "Un cuento para escuchar",
+    "picture": "flor",
+    "session": 2,
+    "type": "story",
+    "instruction": "Escucha el cuento de Ana.",
+    "sentences": [
+      "Ana salió al jardín con una taza de agua.",
+      "Vio una planta con la tierra seca.",
+      "Ana puso agua en la tierra y dejó la taza junto a la puerta.",
+      "Después llamó a su abuelo para mostrarle la planta."
+    ],
+    "items": [
+      {
+        "question": "¿Qué llevó Ana?",
+        "answer": "taza",
+        "options": [
+          "pelota",
+          "taza",
+          "pan"
+        ]
+      },
+      {
+        "question": "¿Qué necesitaba la planta?",
+        "answer": "agua",
+        "options": [
+          "agua",
+          "pan",
+          "pelota"
+        ]
+      },
+      {
+        "question": "¿Qué vio Ana en el jardín?",
+        "answer": "planta",
+        "options": [
+          "planta",
+          "pelota",
+          "perro"
+        ]
+      },
+      {
+        "question": "¿A quién llamó Ana?",
+        "answer": "abuelo",
+        "options": [
+          "gato",
+          "abuelo",
+          "perro"
+        ]
+      },
+      {
+        "question": "¿Dónde estaba Ana?",
+        "answer": "jardin",
+        "options": [
+          "mesa",
+          "jardin",
+          "taza"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "leo-acompanado",
+    "name": "Leo y escucho",
+    "picture": "perro",
+    "session": 3,
+    "type": "paired",
+    "instruction": "Intenta leer esta parte. Toca Ya intenté.",
+    "sentences": [
+      "Luis salió al patio con una pelota.",
+      "Su perro vino junto a él.",
+      "Luis lanzó la pelota y el perro corrió para buscarla.",
+      "Después, Luis puso agua en un plato.",
+      "El perro tomó agua y descansó a su lado."
+    ]
+  },
+  {
+    "id": "mensaje-papel",
+    "name": "Mi mensaje",
+    "picture": "flor",
+    "session": 3,
+    "type": "paper",
+    "instruction": "Dibuja. Escribe algo sobre tu dibujo. Cuéntale a Israel qué escribiste.",
+    "items": [
+      {
+        "picture": "pelota",
+        "prompt": "Dibuja algo que te guste. Escribe algo sobre tu dibujo."
+      },
+      {
+        "picture": "perro",
+        "prompt": "Dibuja un animal. Escribe algo sobre él."
+      },
+      {
+        "picture": "jardin",
+        "prompt": "Dibuja un lugar que te guste. Escribe algo sobre ese lugar."
+      },
+      {
+        "picture": "sol",
+        "prompt": "Dibuja algo que hiciste hoy. Escribe algo sobre tu dibujo."
+      },
+      {
+        "picture": "flor",
+        "prompt": "Dibuja algo que quieras contar. Escribe tu mensaje."
+      }
+    ]
+  }
 ];
-function buildStudent(){const root=$('alumno');root.replaceChildren();const head=elem('div',undefined,'card child-welcome');head.append(elem('h2','Mis tareas'),childButton('🔊 Escuchar bienvenida',()=>childSpeak('Hola. Estas son tus tareas. Elige la que te indique Israel. Toca Escuchar para saber qué hacer. Puedes pedir ayuda o descansar.')));root.append(head);for(let session=1;session<=3;session++){root.append(elem('h3','Encuentro '+session));const grid=elem('div',undefined,'grid');visualTasks.filter(t=>t.session===session).forEach(task=>{const button=childButton('',()=>openVisualTask(task));button.classList.add('task-tile');button.append(childImage(task.picture),elem('span',task.name));grid.append(button);});root.append(grid);}const controls=elem('div',undefined,'actions');controls.append(childButton('⬇ Entregar mis respuestas',()=>downloadJSON({type:'lds-child-activities',version:1,trials:childTrials},'mis-tareas.json')));root.append(controls);const stage=elem('div');stage.id='student-activity';root.append(stage);}
+function buildStudent(){const root=$('alumno');root.replaceChildren();const head=elem('div',undefined,'card child-welcome');head.append(elem('h2','Mis tareas'),childButton('🔊 Escuchar bienvenida',()=>childSpeak('¡Hola! Vamos a jugar. Elige una tarea. Toca el botón de escuchar.')));root.append(head);for(let session=1;session<=3;session++){root.append(elem('h3','Encuentro '+session));const grid=elem('div',undefined,'grid');visualTasks.filter(t=>t.session===session).forEach(task=>{const button=childButton('',()=>openVisualTask(task));button.classList.add('task-tile');button.append(childImage(task.picture),elem('span',task.name));grid.append(button);});root.append(grid);}const controls=elem('div',undefined,'actions');controls.append(childButton('⬇ Entregar mis respuestas',()=>downloadJSON({type:'lds-child-activities',version:1,trials:childTrials},'mis-tareas.json')));root.append(controls);const stage=elem('div');stage.id='student-activity';root.append(stage);}
 function recordChild(response,expected){childTrials.push({task:childCurrent.id,item:childIndex+1,response:String(response),expected:expected==null?'Observación del adulto':String(expected),audioHelp:childHelp,at:new Date().toISOString()});}
 function openVisualTask(task){if('speechSynthesis' in window)speechSynthesis.cancel();childCurrent=task;childIndex=0;drawVisualTask();$('student-activity').scrollIntoView({behavior:'smooth',block:'start'});}
-function drawVisualTask(){childChoice=null;childAttempt=false;childHelp=false;const task=childCurrent,root=$('student-activity');root.replaceChildren();const card=elem('div',undefined,'card task-stage');card.append(elem('h2',task.name));const controls=elem('div',undefined,'actions');controls.append(childButton('🔊 Escuchar instrucciones',()=>childSpeak(task.instruction)),childButton('⏸ Pausa',()=>{if('speechSynthesis' in window)speechSynthesis.cancel();childSpeak('Tomemos una pausa. Cuando estés listo, continúa.');}),childButton('✕ Volver a mis tareas',()=>{if('speechSynthesis' in window)speechSynthesis.cancel();root.replaceChildren();}));card.append(controls);root.append(card);const message=elem('p','', 'child-feedback');message.setAttribute('role','status');
- const next=()=>{if('speechSynthesis' in window)speechSynthesis.cancel();const length=task.items?.length||task.sentences?.length||1;if(childIndex+1<length){childIndex++;drawVisualTask();}else{card.replaceChildren(childImage('flor'),elem('h2','¡Terminaste esta tarea!'),childButton('🔊 Escuchar',()=>childSpeak('Terminaste esta tarea. Gracias por intentarlo.')),childButton('Volver a mis tareas',()=>root.replaceChildren()));}};
- if(['match','initial','story'].includes(task.type)){const item=task.items[childIndex];if(task.type==='story'){const storyBox=elem('div',undefined,'story-audio');storyBox.append(childImage('flor'),childButton('▶ Escuchar el cuento',()=>{childHelp=true;childSpeak(task.sentences.join(' '));}));card.append(storyBox);}const audio=childButton('🔊 Escuchar',()=>{childSpeak(task.type==='initial'?'Busca la palabra que comienza como '+item.word+'. Escucha las opciones: '+item.options.join(', '):task.type==='story'?item.question:item.word);});card.append(audio);const options=elem('div',undefined,'picture-options');item.options.forEach(word=>{const b=childButton('',()=>{childChoice=word;options.querySelectorAll('button').forEach(btn=>btn.setAttribute('aria-pressed',String(btn===b)));});b.setAttribute('aria-label',word);b.setAttribute('aria-pressed','false');b.append(childImage(word));if(task.type==='initial')b.addEventListener('click',()=>childSpeak(word));options.append(b);});card.append(options,message,childButton('✓ Entregar respuesta',()=>{if(!childChoice){message.textContent='Toca una opción.';childSpeak('Toca una opción antes de continuar.');return;}recordChild(childChoice,item.answer||item.word);next();}));}
- else if(task.type==='tokens'){const item=task.items[childIndex];let count=0;card.append(childButton('🔊 Escuchar palabra',()=>childSpeak(item.word)));const countLabel=elem('p','0 fichas','child-feedback');const tokens=elem('div',undefined,'token-board');const update=()=>{tokens.replaceChildren();for(let i=0;i<count;i++)tokens.append(elem('span','●','sound-token'));countLabel.textContent=count+' fichas';};card.append(tokens,countLabel);const tools=elem('div',undefined,'actions');tools.append(childButton('＋ Una ficha',()=>{count=Math.min(6,count+1);update();}),childButton('− Quitar ficha',()=>{count=Math.max(0,count-1);update();}),childButton('✓ Entregar',()=>{recordChild(count,item.parts);next();}));card.append(tools);}
- else if(task.type==='readword'||task.type==='paired'){const isStory=task.type==='paired';const content=isStory?task.sentences[childIndex]:task.items[childIndex].word;const display=elem('p',content,isStory?'child-story':'word-display');card.append(display);const listen=childButton('🔊 Escuchar después de intentar',()=>{childHelp=true;if(!isStory){childSpeak(content);return;}const words=content.split(' ');let i=0;display.replaceChildren();const spans=words.map(w=>{const sp=elem('span',w+' ');display.append(sp);return sp;});const speakNext=()=>{if(i>=spans.length){spans.forEach(sp=>sp.classList.remove('spoken-word'));return;}spans.forEach(sp=>sp.classList.remove('spoken-word'));spans[i].classList.add('spoken-word');childSpeak(words[i++],speakNext);};speakNext();});listen.disabled=true;const tried=childButton('✓ Ya intenté',()=>{childAttempt=true;listen.disabled=false;tried.disabled=true;});card.append(tried,listen,childButton('→ Continuar',()=>{if(!childAttempt){message.textContent='Toca “Ya intenté” cuando termines tu intento.';return;}recordChild('Intento de lectura; precisión pendiente de observar por el asesor',null);next();}),message);}
- else{card.append(childImage('flor'),childButton('🔊 Escuchar mi tarea',()=>childSpeak(task.instruction)),elem('p','✏️ + 📄','paper-icons'),childButton('✓ Ya hice mi mensaje',()=>{recordChild('Producción en papel pendiente de revisar por el asesor',null);next();}));}
+function drawVisualTask(){childChoice=null;childAttempt=false;childHelp=false;const task=childCurrent,root=$('student-activity');root.replaceChildren();const card=elem('div',undefined,'card task-stage');card.append(elem('h2',task.name));const controls=elem('div',undefined,'actions');controls.append(childButton('🔊 Escuchar instrucciones',()=>childSpeak(task.instruction)),childButton('⏸ Pausa',()=>{if('speechSynthesis' in window)speechSynthesis.cancel();childSpeak('Descansa un momento. Seguimos cuando estés listo.');}),childButton('✕ Volver a mis tareas',()=>{if('speechSynthesis' in window)speechSynthesis.cancel();root.replaceChildren();}));card.append(controls);root.append(card);const message=elem('p','', 'child-feedback');message.setAttribute('role','status');
+ const next=()=>{if('speechSynthesis' in window)speechSynthesis.cancel();const length=task.items?.length||task.sentences?.length||1;if(childIndex+1<length){childIndex++;drawVisualTask();}else{card.replaceChildren(childImage('flor'),elem('h2','¡Terminaste esta tarea!'),childButton('🔊 Escuchar',()=>childSpeak('¡Terminaste! Gracias por intentarlo.')),childButton('Volver a mis tareas',()=>root.replaceChildren()));}};
+ if(['match','initial','story'].includes(task.type)){const item=task.items[childIndex];if(task.type==='story'){const storyBox=elem('div',undefined,'story-audio');storyBox.append(childImage('flor'),childButton('▶ Escuchar el cuento',()=>{childHelp=true;childSpeak(task.sentences.join(' '));}));card.append(storyBox);}const audio=childButton(task.type==='story'?'🔊 Escuchar pregunta':'🔊 Escuchar',()=>{childSpeak(task.type==='initial'?'Escucha: '+item.word+'. Ahora escucha las otras palabras: '+item.options.join('. ')+'. Toca la que empieza como '+item.word+'.':task.type==='story'?item.question+'. Toca el dibujo de tu respuesta.':item.word);});card.append(audio);const options=elem('div',undefined,'picture-options');item.options.forEach(word=>{const b=childButton('',()=>{childChoice=word;options.querySelectorAll('button').forEach(btn=>btn.setAttribute('aria-pressed',String(btn===b)));});b.setAttribute('aria-label',word);b.setAttribute('aria-pressed','false');b.append(childImage(word));if(task.type==='initial')b.addEventListener('click',()=>childSpeak(word));options.append(b);});card.append(options,message,childButton('✓ Entregar respuesta',()=>{if(!childChoice){message.textContent='Toca una opción.';childSpeak('Toca un dibujo.');return;}recordChild(childChoice,item.answer||item.word);next();}));}
+ else if(task.type==='tokens'){const item=task.items[childIndex];let count=0;card.append(childButton('🔊 Escuchar palabra',()=>childSpeak(item.word)));if(childIndex===0)card.append(childButton('🔊 Ver cómo se hace',()=>childSpeak('Casa: ca… sa. Dos palmadas. Dos fichas. Ahora tú.')));const countLabel=elem('p','0 fichas','child-feedback');const tokens=elem('div',undefined,'token-board');const update=()=>{tokens.replaceChildren();for(let i=0;i<count;i++)tokens.append(elem('span','●','sound-token'));countLabel.textContent=count+' fichas';};card.append(tokens,countLabel);const tools=elem('div',undefined,'actions');tools.append(childButton('＋ Una ficha',()=>{count=Math.min(6,count+1);update();}),childButton('− Quitar ficha',()=>{count=Math.max(0,count-1);update();}),childButton('✓ Entregar',()=>{recordChild(count,item.parts);next();}));card.append(tools);}
+ else if(task.type==='readword'||task.type==='paired'){const isStory=task.type==='paired';const content=isStory?task.sentences[childIndex]:task.items[childIndex].word;const display=elem('p',content,isStory?'child-story':'word-display');card.append(display);const listen=childButton('🔊 Escuchar',()=>{childHelp=true;if(!isStory){childSpeak(content);return;}const words=content.split(' ');let i=0;display.replaceChildren();const spans=words.map(w=>{const sp=elem('span',w+' ');display.append(sp);return sp;});const speakNext=()=>{if(i>=spans.length){spans.forEach(sp=>sp.classList.remove('spoken-word'));return;}spans.forEach(sp=>sp.classList.remove('spoken-word'));spans[i].classList.add('spoken-word');childSpeak(words[i++],speakNext);};speakNext();});listen.disabled=true;const tried=childButton('✓ Ya intenté',()=>{childAttempt=true;listen.disabled=false;tried.disabled=true;childSpeak(isStory?'Toca Escuchar. Sigue las palabras con la mirada.':'Ahora puedes escuchar la palabra.');});card.append(tried,listen,childButton('→ Continuar',()=>{if(!childAttempt){message.textContent='Toca “Ya intenté” cuando termines tu intento.';return;}recordChild('Intento de lectura; precisión pendiente de observar por el asesor',null);next();}),message);}
+ else{const item=task.items[childIndex];card.append(childImage(item.picture),childButton('🔊 Escuchar mi tarea',()=>childSpeak(item.prompt+' Cuéntale a Israel qué escribiste.')),elem('p','✏️ + 📄','paper-icons'),childButton('✓ Ya hice mi mensaje',()=>{recordChild(item.prompt+' · Producción en papel pendiente de revisar por el asesor',null);next();}));}
  const length=task.items?.length||task.sentences?.length||1;card.append(elem('p',(childIndex+1)+' / '+length,'muted'));}
-function attachChildImport(){const root=$('diagnostico');const card=elem('div',undefined,'card');card.append(elem('h3','Recibir respuestas de Mis tareas'),elem('p','La entrega contiene elecciones, fichas e indicación de audio. La lectura y la escritura requieren tu observación directa: el botón «Ya intenté» no demuestra precisión. Las tareas digitales complementan la guía y no reemplazan sus ítems ni sus criterios.'));const file=elem('input');file.type='file';file.accept='.json,application/json';file.hidden=true;const output=elem('div');file.addEventListener('change',async()=>{try{const f=file.files[0];if(!f)return;if(f.size>200000)throw Error('Archivo demasiado grande.');const data=JSON.parse(await f.text());if(data.type!=='lds-child-activities'||data.version!==1||!Array.isArray(data.trials)||data.trials.length>500)throw Error('Entrega no válida.');for(const trial of data.trials){if(!visualTasks.some(t=>t.id===trial.task)||!Number.isInteger(trial.item)||trial.item<1||trial.item>20||typeof trial.response!=='string'||trial.response.length>1000||typeof trial.expected!=='string'||trial.expected.length>1000||typeof trial.audioHelp!=='boolean'||typeof trial.at!=='string'||trial.at.length>50)throw Error('Respuesta no válida.');}output.replaceChildren();data.trials.forEach(t=>output.append(elem('p',t.task+' · '+t.item+' · Respuesta: '+t.response+' · Referencia: '+t.expected+' · Audio de apoyo: '+(t.audioHelp?'sí':'no'))));notify('Entrega abierta. Revisa las respuestas y registra tu interpretación en la valoración.');}catch(e){notify(e.message);}file.value='';});card.append(action('Cargar entrega del alumno',()=>file.click()),file,output);root.prepend(card);}
+function attachChildImport(){const root=$('diagnostico');const card=elem('div',undefined,'card');card.append(elem('h3','Recibir respuestas de Mis tareas'),elem('p','Cada tarea digital dispone de al menos cinco ejercicios. Los cinco mensajes en papel son propuestas para repartir según la atención y la fatiga; no es necesario completarlos de una sola vez. La entrega contiene elecciones, fichas e indicación de audio. La lectura y la escritura requieren tu observación directa: el botón «Ya intenté» no demuestra precisión. Las tareas digitales complementan la guía y no reemplazan sus ítems ni sus criterios.'));const file=elem('input');file.type='file';file.accept='.json,application/json';file.hidden=true;const output=elem('div');file.addEventListener('change',async()=>{try{const f=file.files[0];if(!f)return;if(f.size>200000)throw Error('Archivo demasiado grande.');const data=JSON.parse(await f.text());if(data.type!=='lds-child-activities'||data.version!==1||!Array.isArray(data.trials)||data.trials.length>500)throw Error('Entrega no válida.');for(const trial of data.trials){if(!visualTasks.some(t=>t.id===trial.task)||!Number.isInteger(trial.item)||trial.item<1||trial.item>20||typeof trial.response!=='string'||trial.response.length>1000||typeof trial.expected!=='string'||trial.expected.length>1000||typeof trial.audioHelp!=='boolean'||typeof trial.at!=='string'||trial.at.length>50)throw Error('Respuesta no válida.');}output.replaceChildren();data.trials.forEach(t=>output.append(elem('p',t.task+' · '+t.item+' · Respuesta: '+t.response+' · Referencia: '+t.expected+' · Audio de apoyo: '+(t.audioHelp?'sí':'no'))));notify('Entrega abierta. Revisa las respuestas y registra tu interpretación en la valoración.');}catch(e){notify(e.message);}file.value='';});card.append(action('Cargar entrega del alumno',()=>file.click()),file,output);root.prepend(card);}
 
 function buildAssessment(){const root=$('diagnostico');root.replaceChildren();const head=elem('div',undefined,'card');head.append(elem('h2','Valoración pedagógica inicial · tres sesiones'),elem('p','Instrumentos originales para observar el punto de partida al iniciar segundo grado. Exploran aprendizajes de alfabetización y lenguaje; no son pruebas estandarizadas ni permiten afirmar «por debajo del grado» a partir de un porcentaje.'),elem('p','Referente: transición de primero a segundo de primaria, lectura de palabras y textos breves, comprensión de relatos y escritura con propósito. Ajustar a lo enseñado en su escuela, lengua de escolarización y currículo local; revisar sus trabajos y el informe diagnóstico.'),elem('p','Primero registra el intento sin ayuda. Después ofrece apoyo y describe cuál. Evita ensayar los mismos ítems en casa antes de completar la valoración. Detén una tarea ante fatiga o frustración.'));root.append(head);
  const context=elem('div',undefined,'card');context.append(elem('h3','Antes de comenzar'));makeArea(context,'context','Antecedentes educativos, lengua, apoyos, intereses y acuerdos (sin datos de identidad)',assessment.context,v=>assessment.context=v);root.append(context);
